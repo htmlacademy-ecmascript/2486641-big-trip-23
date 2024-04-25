@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Денис Захаров](https://up.htmlacademy.ru/ecmascript/23/user/2486641).
-* Наставник: `Неизвестно`.
+* Наставник: [Oleg Petrov](https://htmlacademy.ru/profile/fyvfyv).
 
 ---
 
