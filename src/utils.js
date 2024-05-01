@@ -1,5 +1,13 @@
-function getRandomArrayElement(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
+import dayjs from 'dayjs';
 
-export {getRandomArrayElement};
+const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
+
+const getFormattingDate = (date, format) => {
+  if (date) {
+    const result = dayjs(date).format(format);
+    return result;
+  }
+  return '';
+};
+
+export {getRandomArrayElement, getFormattingDate};

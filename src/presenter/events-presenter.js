@@ -7,16 +7,17 @@ import EventView from '../view/event-view.js';
 export default class EventListPresenter {
   eventListComponent = new EventListView();
 
-  constructor(container) {
+  constructor({container, eventsModel}) {
     this.container = container;
+    this.eventsModel = eventsModel;
   }
 
   renderEventList(){
     render(this.eventListComponent, this.container);
   }
 
-  renderEvent(){
-    render(new EventView(), this.eventListComponent.getElement());
+  renderEvent(event){
+    render(new EventView({event}), this.eventListComponent.getElement());
   }
 
   renderAddEvent(){
@@ -28,10 +29,12 @@ export default class EventListPresenter {
   }
 
   init() {
+    this.events = [...this.eventsModel.getEvents()];
+
     this.renderEventList();
-    this.renderEditEvent();
-    for (let i = 0; i < 3; i++){
-      this.renderEvent();
+    //this.renderEditEvent();
+    for (let i = 0; i < this.events.length; i++){
+      this.renderEvent(this.events[i]);
     }
   }
 }
