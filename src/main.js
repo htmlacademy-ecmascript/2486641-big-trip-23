@@ -1,3 +1,5 @@
+import { getMockCities } from './mock/city.js';
+import { getMockOffer } from './mock/offer.js';
 import EventsModel from './model/events-model.js';
 import EventListPresenter from './presenter/events-presenter.js';
 import {render} from './render.js';
@@ -15,3 +17,5 @@ const eventListPresenter = new EventListPresenter({
 render(new FilterView(), controlFiltersElement);
 render(new SortView(), tripEventsElement);
 eventListPresenter.init();
+
+//console.log(getMockOffer('5284ce5c-16f5-40a5-99d4-8c760bad607e'));

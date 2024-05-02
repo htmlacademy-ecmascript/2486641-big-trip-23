@@ -207,4 +207,15 @@ const mockOffers = [
 
 const getMockOffers = () => mockOffers;
 
-export { getMockOffers };
+const getMockOffer = (id) => {
+  if (id) {
+    const offers = [];
+    mockOffers.forEach((element) => {
+      element.offers.forEach((offer) => offers.push(offer));
+    });
+    return offers.find((element) => element.id === id);
+  }
+  return '';
+};
+
+export { getMockOffers, getMockOffer };

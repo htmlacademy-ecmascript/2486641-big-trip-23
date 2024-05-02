@@ -1,26 +1,36 @@
+import { getMockCities } from '../mock/city.js';
+import { getMockOffer } from '../mock/offer.js';
 import { createElement } from '../render.js';
-import { getFormattingDate } from '../utils.js';
+import { getDuration, getFormattingDate } from '../utils.js';
 
 const createEventTemplate = (event) => {
-  const {basePrice, dateFrom, dateTo, isFavorite, type} = event;
+  const {basePrice, dateFrom, dateTo, isFavorite, type, destination, offers} = event;
   const favotiteClass = isFavorite ? 'event__favorite-btn--active' : '';
   const printDate = getFormattingDate(dateFrom, 'MMM D');
-  console.log(event);
+  const startDate = getFormattingDate(dateFrom, 'YYYY-MM-DDTHH:mm');
+  const endDate = getFormattingDate(dateTo, 'YYYY-MM-DDTHH:mm');
+  const startTime = getFormattingDate(dateFrom, 'HH:mm');
+  const endTime = getFormattingDate(dateTo, 'HH:mm');
+  const eventDuration = getDuration(dateFrom, dateTo);
+  const city = getMockCities(destination);
+  const eventTitle = `${type}  ${city.name}`;
+  const offersInfo = offers.map((element) => getMockOffer(element));
+  console.log(offersInfo);
   return (
     `<li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime="2019-03-18">${printDate}</time>
+        <time class="event__date" datetime="${startDate}">${printDate}</time>
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">Taxi Amsterdam</h3>
+        <h3 class="event__title">${eventTitle}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+            <time class="event__start-time" datetime="${startDate}">${startTime}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+            <time class="event__end-time" datetime="${endDate}">${endTime}</time>
           </p>
-          <p class="event__duration">30M</p>
+          <p class="event__duration">${eventDuration}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${basePrice}</span>

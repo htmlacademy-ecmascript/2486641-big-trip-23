@@ -32,7 +32,7 @@ export default class EventListPresenter {
     this.events = [...this.eventsModel.getEvents()];
 
     this.renderEventList();
-    //this.renderEditEvent();
+    this.renderEditEvent();
     for (let i = 0; i < this.events.length; i++){
       this.renderEvent(this.events[i]);
     }
