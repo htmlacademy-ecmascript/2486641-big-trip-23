@@ -1,5 +1,3 @@
-import { getRandomArrayElement } from '../utils.js';
-
 const mockEvents = [
   {
     'id': '3470cafa-31a4-4b71-8e33-bd3c3df7df38',
@@ -306,7 +304,6 @@ const mockEvents = [
   }
 ];
 
-const getRandomEvent = () =>
-  getRandomArrayElement(mockEvents);
+const getMockEvents = () => mockEvents;
 
-export { getRandomEvent };
+export { getMockEvents };

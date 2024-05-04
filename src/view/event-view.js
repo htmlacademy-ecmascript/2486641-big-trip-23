@@ -1,10 +1,8 @@
-import { getMockCities } from '../mock/city.js';
-import { getMockOffer } from '../mock/offer.js';
 import { createElement } from '../render.js';
 import { getDuration, getFormattingDate } from '../utils.js';
 
-const createEventTemplate = (event) => {
-  const {basePrice, dateFrom, dateTo, isFavorite, type, destination, offers} = event;
+const createEventTemplate = (event, destination, offersInfo) => {
+  const {basePrice, dateFrom, dateTo, isFavorite, type} = event;
   const favotiteClass = isFavorite ? 'event__favorite-btn--active' : '';
   const printDate = getFormattingDate(dateFrom, 'MMM D');
   const startDate = getFormattingDate(dateFrom, 'YYYY-MM-DDTHH:mm');
@@ -12,10 +10,13 @@ const createEventTemplate = (event) => {
   const startTime = getFormattingDate(dateFrom, 'HH:mm');
   const endTime = getFormattingDate(dateTo, 'HH:mm');
   const eventDuration = getDuration(dateFrom, dateTo);
-  const city = getMockCities(destination);
-  const eventTitle = `${type}  ${city.name}`;
-  const offersInfo = offers.map((element) => getMockOffer(element));
-  console.log(offersInfo);
+  const selectedOffers = offersInfo.map((element) => (
+    `<li class="event__offer">
+      <span class="event__offer-title">${element.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${element.price}</span>
+    </li>`
+  )).join('');
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -23,7 +24,7 @@ const createEventTemplate = (event) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${eventTitle}</h3>
+        <h3 class="event__title">${type}  ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${startDate}">${startTime}</time>
@@ -37,11 +38,7 @@ const createEventTemplate = (event) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title">Order Uber</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">20</span>
-          </li>
+          ${selectedOffers}
         </ul>
         <button class="event__favorite-btn ${favotiteClass}" type="button">
           <span class="visually-hidden">Add to favorite</span>
@@ -59,12 +56,14 @@ const createEventTemplate = (event) => {
 
 
 export default class EventView {
-  constructor({event}) {
+  constructor(event, destination, offersInfo) {
     this.event = event;
+    this.destination = destination;
+    this.offersInfo = offersInfo;
   }
 
   getTemplate() {
-    return createEventTemplate(this.event);
+    return createEventTemplate(this.event, this.destination, this.offersInfo);
   }
 
   getElement() {

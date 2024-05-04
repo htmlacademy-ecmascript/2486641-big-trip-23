@@ -1,6 +1,4 @@
-import { getRandomArrayElement } from '../utils.js';
-
-const mockCities = [
+const mockDestinations = [
   {
     id: 'e5c26d80-c07c-4012-8d46-d510fdb2c79c',
     description: 'Tokio - a true asian pearl',
@@ -199,13 +197,6 @@ const mockCities = [
   },
 ];
 
-const getRandomCity = () => getRandomArrayElement(mockCities);
+const getMockDestinations = () => mockDestinations;
 
-const getMockCities = (id) => {
-  if (id) {
-    return mockCities.find((element) => element.id === id);
-  }
-  return mockCities;
-};
-
-export { getMockCities, getRandomCity };
+export { getMockDestinations };
