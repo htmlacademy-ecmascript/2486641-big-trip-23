@@ -1,5 +1,6 @@
 import { EVENT_TYPES } from '../const.js';
 import { render } from '../render.js';
+import { getRandomArrayElement } from '../utils.js';
 import AddEventView from '../view/add-event-view.js';
 import EditEventView from '../view/edit-event-view.js';
 import EventListView from '../view/event-list-view.js';
@@ -34,15 +35,16 @@ export default class EventListPresenter {
     this.destinations = this.eventsModel.getDestinations();
     this.offers = this.eventsModel.getOffers();
 
+    const randomEvent = getRandomArrayElement(this.events);
+    const offersAvailable = this.eventsModel.getOffer(randomEvent.type);
+    const randomEventDestination = this.eventsModel.getDestination(randomEvent.destination);
+    const cities = this.eventsModel.getCities();
+    this.renderEditEvent(randomEvent, randomEventDestination, offersAvailable, cities);
+
     this.renderEventList();
-    for (let i = 0; i < this.events.length; i++){
-      const event = this.events[i];
+    for (const event of this.events){
       const destination = this.eventsModel.getDestination(event.destination);
       const offersInfo = event.offers.map((element) => this.eventsModel.getOffer(event.type, element));
-      if (i === 0) {
-        const cities = this.eventsModel.getCities();
-        this.renderEditEvent(event, destination, offersInfo, cities);
-      }
       this.renderEvent(event, destination, offersInfo);
     }
   }

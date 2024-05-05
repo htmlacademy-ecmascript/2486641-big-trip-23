@@ -1,10 +1,6 @@
 import dayjs from 'dayjs';
 
-//const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
-const shuffleArray = (array) => array
-  .map((a) => ({ sort: Math.random(), value: a }))
-  .sort((a, b) => a.sort - b.sort)
-  .map((a) => a.value);
+const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
 
 const getFormattingDate = (date, format) => {
   if (date) {
@@ -27,4 +23,4 @@ const getDuration = (dateFrom, dateTo) => {
 };
 
 
-export {shuffleArray, getFormattingDate, getDuration};
+export { getFormattingDate, getDuration, getRandomArrayElement };
