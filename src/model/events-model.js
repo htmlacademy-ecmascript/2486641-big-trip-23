@@ -3,10 +3,11 @@ import { getMockDestinations } from '../mock/destination.js';
 import { getMockOffers } from '../mock/offer.js';
 
 export default class EventsModel {
-  constructor(){}
   events = getMockEvents();
   destinations = getMockDestinations();
   offers = getMockOffers();
+
+  constructor(){}
 
   getEvents() {
     return this.events;
@@ -16,23 +17,16 @@ export default class EventsModel {
     return this.destinations;
   }
 
-  getOffers() {
+  getOffers(type) {
+    if (type) {
+      return this.offers.find((element) => element.type === type).offers;
+    }
     return this.offers;
   }
 
-  getDestination = (id) => {
-    if (id) {
-      return this.destinations.find((element) => element.id === id);
-    }
-  };
+  getDestination = (id) => this.destinations.find((element) => element.id === id);
 
-  getOffer = (type, id) => {
-    const offers = this.offers.find((element) => element.type === type).offers;
-    if (id) {
-      return offers.find((element) => element.id === id);
-    }
-    return offers;
-  };
+  getOffer = (type, id) => this.getOffers(type).find((element) => element.id === id);
 
   getCities = () => this.destinations.map((element) => element.name);
 

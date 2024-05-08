@@ -36,7 +36,7 @@ export default class EventListPresenter {
     this.offers = this.eventsModel.getOffers();
 
     const randomEvent = getRandomArrayElement(this.events);
-    const offersAvailable = this.eventsModel.getOffer(randomEvent.type);
+    const offersAvailable = this.eventsModel.getOffers(randomEvent.type);
     const randomEventDestination = this.eventsModel.getDestination(randomEvent.destination);
     const cities = this.eventsModel.getCities();
     this.renderEditEvent(randomEvent, randomEventDestination, offersAvailable, cities);
