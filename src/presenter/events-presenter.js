@@ -1,5 +1,5 @@
 import { EVENT_TYPES } from '../const.js';
-import { render } from '../render.js';
+import { render } from '../framework/render.js';
 import { getRandomArrayElement } from '../utils.js';
 import AddEventView from '../view/add-event-view.js';
 import EditEventView from '../view/edit-event-view.js';
@@ -19,15 +19,15 @@ export default class EventListPresenter {
   }
 
   renderEvent(event, destination, offersInfo){
-    render(new EventView(event, destination, offersInfo), this.eventListComponent.getElement());
+    render(new EventView(event, destination, offersInfo), this.eventListComponent.element);
   }
 
   renderAddEvent(){
-    render(new AddEventView(), this.eventListComponent.getElement());
+    render(new AddEventView(), this.eventListComponent.element);
   }
 
   renderEditEvent(event, destination, offersInfo, cities){
-    render(new EditEventView(event, destination, offersInfo, EVENT_TYPES, cities), this.eventListComponent.getElement());
+    render(new EditEventView(event, destination, offersInfo, EVENT_TYPES, cities), this.eventListComponent.element);
   }
 
   init() {

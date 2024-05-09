@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { getFormattingDate } from '../utils.js';
 
 const createEditEventTemplate = (event, destination, offers, eventTpes, cities) => {
@@ -92,28 +92,23 @@ const createEditEventTemplate = (event, destination, offers, eventTpes, cities) 
 };
 
 
-export default class EditEventView {
+export default class EditEventView extends AbstractView {
+  #event = null;
+  #destination = null;
+  #offers = null;
+  #eventTypes = null;
+  #cities = null;
   constructor(event, destination, offers, eventTypes, cities){
-    this.event = event;
-    this.destination = destination;
-    this.offers = offers;
-    this.eventTypes = eventTypes;
-    this.cities = cities;
+    super();
+    this.#event = event;
+    this.#destination = destination;
+    this.#offers = offers;
+    this.#eventTypes = eventTypes;
+    this.#cities = cities;
   }
 
-  getTemplate() {
-    return createEditEventTemplate(this.event, this.destination, this.offers, this.eventTypes, this.cities);
+  get template() {
+    return createEditEventTemplate(this.#event, this.#destination, this.#offers, this.#eventTypes, this.#cities);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
 }
