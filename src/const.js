@@ -1,6 +1,11 @@
 const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
-const FILTERS = ['everything', 'future', 'present', 'past'];
+const FilterType = {
+  everything: 'everything',
+  future: 'future',
+  present: 'present',
+  past: 'past',
+};
 
 const SORT_ITEMS = [
   {value: 'day', label: 'Day'},
@@ -10,4 +15,4 @@ const SORT_ITEMS = [
   {value: 'offer', label: 'Offers'},
 ];
 
-export {EVENT_TYPES, FILTERS, SORT_ITEMS};
+export {EVENT_TYPES, SORT_ITEMS, FilterType};

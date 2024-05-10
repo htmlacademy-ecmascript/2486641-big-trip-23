@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { getDuration, getFormattingDate } from '../utils.js';
+import { getDuration, getFormattingDate } from '../utils/event.js';
 
 const createEventTemplate = (event, destination, offersInfo) => {
   const {basePrice, dateFrom, dateTo, isFavorite, type} = event;

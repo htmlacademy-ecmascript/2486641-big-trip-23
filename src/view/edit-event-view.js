@@ -1,8 +1,8 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { getFormattingDate } from '../utils.js';
+import { getFormattingDate } from '../utils/event.js';
 
-const createEditEventTemplate = (event, destination, offers, eventTpes, cities) => {
-  const eventTypeItems = eventTpes.map((type) => (
+const createEditEventTemplate = (event, destination, offers, eventTypes, cities) => {
+  const eventTypeItems = eventTypes.map((type) => (
     `<div class="event__type-item">
     <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
     <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type[0].toUpperCase() + type.slice(1)}</label>

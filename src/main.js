@@ -1,5 +1,6 @@
-import { FILTERS, SORT_ITEMS } from './const.js';
+import { SORT_ITEMS } from './const.js';
 import { render } from './framework/render.js';
+import { generateFilter } from './mock/filter.js';
 import EventsModel from './model/events-model.js';
 import EventListPresenter from './presenter/events-presenter.js';
 import FilterView from './view/filter-view.js';
@@ -12,7 +13,8 @@ const eventListPresenter = new EventListPresenter({
   container: tripEventsElement,
   eventsModel
 });
-
-render(new FilterView(FILTERS), controlFiltersElement);
+const filters = generateFilter(eventsModel.events);
+console.log(filters);
+render(new FilterView(filters), controlFiltersElement);
 render(new SortView(SORT_ITEMS), tripEventsElement);
 eventListPresenter.init();
