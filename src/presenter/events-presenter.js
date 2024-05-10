@@ -19,7 +19,7 @@ export default class EventListPresenter {
     render(this.#eventListComponent, this.#container);
   }
 
-  #renderEvent(event, destination, offersInfo, cities){
+  #renderEvent(event, destination, offersInfo, cities, offers){
     const escKeyDownHandler = (evt) => {
       if (evt.key === 'Escape') {
         evt.preventDefault();
@@ -39,7 +39,7 @@ export default class EventListPresenter {
     const editEventElement = new EditEventView({
       event,
       destination,
-      offers: offersInfo,
+      offers,
       eventTypes: EVENT_TYPES,
       cities,
       onFormSubmit: () => {
@@ -72,7 +72,8 @@ export default class EventListPresenter {
     for (const event of this.events){
       const destination = this.#eventsModel.getDestination(event.destination);
       const offersInfo = event.offers.map((element) => this.#eventsModel.getOffer(event.type, element));
-      this.#renderEvent(event, destination, offersInfo, this.cities);
+      const offers = this.#eventsModel.getOffers(event.type);
+      this.#renderEvent(event, destination, offersInfo, this.cities, offers);
     }
   }
 
