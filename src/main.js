@@ -1,6 +1,6 @@
+import { render } from './framework/render.js';
 import EventsModel from './model/events-model.js';
 import EventListPresenter from './presenter/events-presenter.js';
-import {render} from './render.js';
 import FilterView from './view/filter-view.js';
 import SortView from './view/sort-view.js';
 

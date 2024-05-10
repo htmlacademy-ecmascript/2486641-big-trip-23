@@ -1,7 +1,5 @@
 import dayjs from 'dayjs';
 
-const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
-
 const getFormattingDate = (date, format) => {
   if (date) {
     const result = dayjs(date).format(format);
@@ -23,4 +21,4 @@ const getDuration = (dateFrom, dateTo) => {
 };
 
 
-export { getFormattingDate, getDuration, getRandomArrayElement };
+export { getFormattingDate, getDuration };

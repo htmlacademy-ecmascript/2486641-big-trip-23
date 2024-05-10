@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { getFormattingDate } from '../utils.js';
 
 const createEditEventTemplate = (event, destination, offers, eventTpes, cities) => {
@@ -92,28 +92,43 @@ const createEditEventTemplate = (event, destination, offers, eventTpes, cities) 
 };
 
 
-export default class EditEventView {
-  constructor(event, destination, offers, eventTypes, cities){
-    this.event = event;
-    this.destination = destination;
-    this.offers = offers;
-    this.eventTypes = eventTypes;
-    this.cities = cities;
+export default class EditEventView extends AbstractView {
+  #event = null;
+  #destination = null;
+  #offers = null;
+  #eventTypes = null;
+  #cities = null;
+  #handleFormSubmit = null;
+  #handleFormClose = null;
+  constructor({event, destination, offers, eventTypes, cities, onFormSubmit, onFormClose}){
+    super();
+    this.#event = event;
+    this.#destination = destination;
+    this.#offers = offers;
+    this.#eventTypes = eventTypes;
+    this.#cities = cities;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleFormClose = onFormClose;
+
+    this.element.querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#formCloseHandler);
   }
 
-  getTemplate() {
-    return createEditEventTemplate(this.event, this.destination, this.offers, this.eventTypes, this.cities);
+  get template() {
+    return createEditEventTemplate(this.#event, this.#destination, this.#offers, this.#eventTypes, this.#cities);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 
-    return this.element;
-  }
+  #formCloseHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormClose();
+  };
 
-  removeElement() {
-    this.element = null;
-  }
 }
