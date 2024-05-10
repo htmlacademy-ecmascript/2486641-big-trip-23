@@ -1,3 +1,4 @@
+import { FILTERS, SORT_ITEMS } from './const.js';
 import { render } from './framework/render.js';
 import EventsModel from './model/events-model.js';
 import EventListPresenter from './presenter/events-presenter.js';
@@ -12,6 +13,6 @@ const eventListPresenter = new EventListPresenter({
   eventsModel
 });
 
-render(new FilterView(), controlFiltersElement);
-render(new SortView(), tripEventsElement);
+render(new FilterView(FILTERS), controlFiltersElement);
+render(new SortView(SORT_ITEMS), tripEventsElement);
 eventListPresenter.init();
