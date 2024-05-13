@@ -86,12 +86,12 @@ export default class EventListPresenter {
 
   init() {
     this.events = this.#eventsModel.events;
-    if (this.events.length > 0) {
-      this.destinations = this.#eventsModel.destinations;
-      this.cities = this.#eventsModel.cities;
-      this.#renderTrip();
-    } else {
+    if (!this.events.length) {
       render(new EmptyListView(), this.#container);
+      return;
     }
+    this.destinations = this.#eventsModel.destinations;
+    this.cities = this.#eventsModel.cities;
+    this.#renderTrip();
   }
 }
