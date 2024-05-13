@@ -17,6 +17,10 @@ export default class EventsModel {
     return this.#destinations;
   }
 
+  get cities () {
+    return this.#destinations.map((element) => element.name);
+  }
+
   getOffers(type) {
     if (type) {
       return this.#offers.find((element) => element.type === type).offers;
@@ -28,7 +32,4 @@ export default class EventsModel {
 
   getOffer = (type, id) => this.getOffers(type).find((element) => element.id === id);
 
-  get cities () {
-    return this.#destinations.map((element) => element.name);
-  }
 }

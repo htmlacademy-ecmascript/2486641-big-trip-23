@@ -1,9 +1,11 @@
-import { EVENT_TYPES } from '../const.js';
+import { EVENT_TYPES, SORT_ITEMS } from '../const.js';
 import { render, replace } from '../framework/render.js';
 import AddEventView from '../view/add-event-view.js';
 import EditEventView from '../view/edit-event-view.js';
+import EmptyListView from '../view/empty-list-view.js';
 import EventListView from '../view/event-list-view.js';
 import EventView from '../view/event-view.js';
+import SortView from '../view/sort-view.js';
 
 export default class EventListPresenter {
   #eventListComponent = new EventListView();
@@ -67,7 +69,12 @@ export default class EventListPresenter {
     render(new AddEventView(), this.#eventListComponent.element);
   }
 
+  #renderSort(){
+    render(new SortView(SORT_ITEMS), this.#container);
+  }
+
   #renderTrip() {
+    this.#renderSort();
     this.#renderEventList();
     for (const event of this.events){
       const destination = this.#eventsModel.getDestination(event.destination);
@@ -79,6 +86,10 @@ export default class EventListPresenter {
 
   init() {
     this.events = this.#eventsModel.events;
+    if (!this.events.length) {
+      render(new EmptyListView(), this.#container);
+      return;
+    }
     this.destinations = this.#eventsModel.destinations;
     this.cities = this.#eventsModel.cities;
     this.#renderTrip();
