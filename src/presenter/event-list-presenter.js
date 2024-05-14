@@ -41,9 +41,8 @@ export default class EventListPresenter {
       const destination = this.#eventsModel.getDestination(event.destination);
       const offersInfo = event.offers.map((element) => this.#eventsModel.getOffer(event.type, element));
       const offers = this.#eventsModel.getOffers(event.type);
-      const eventElement = new EventPresenter(this.#eventListComponent.element);
+      const eventElement = new EventPresenter({eventListElement: this.#eventListComponent.element});
       eventElement.init({event, destination, offersInfo, cities: this.cities, offers});
-      //this.#renderEvent(event, destination, offersInfo, this.cities, offers);
     }
   }
 
