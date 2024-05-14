@@ -12,6 +12,7 @@ export default class EventListPresenter {
   #emptyListComponent = new EmptyListView();
   #container = null;
   #eventsModel = null;
+  #events = [];
 
   constructor({container, eventsModel}) {
     this.#container = container;
@@ -37,7 +38,7 @@ export default class EventListPresenter {
   #renderTrip() {
     this.#renderSort();
     this.#renderEventList();
-    for (const event of this.events){
+    for (const event of this.#events){
       const destination = this.#eventsModel.getDestination(event.destination);
       const offersInfo = event.offers.map((element) => this.#eventsModel.getOffer(event.type, element));
       const offers = this.#eventsModel.getOffers(event.type);
@@ -46,9 +47,14 @@ export default class EventListPresenter {
     }
   }
 
+  #handleEventChange = (updatedEvent) => {
+    this.#events = updateItem(this.#events, updatedTask);
+    //this.#taskPresenters.get(updatedTask.id).init(updatedTask);
+  }
+
   init() {
-    this.events = this.#eventsModel.events;
-    if (!this.events.length) {
+    this.#events = this.#eventsModel.events;
+    if (!this.#events.length) {
       this.#renderEmptyList();
       return;
     }
