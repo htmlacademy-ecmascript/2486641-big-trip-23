@@ -7,6 +7,9 @@ export default class EventPresenter {
   #eventElement = null;
   #editEventElement = null;
   #eventListElement = null;
+  #handleDataChange = null;
+  #eventsModel = null;
+  #resetEventList = null;
 
   #event = null;
   #destination = null;
@@ -14,16 +17,55 @@ export default class EventPresenter {
   #cities = null;
   #offers = null;
 
-  constructor({eventListElement}) {
+  constructor({eventListElement, onDataChange, eventsModel, resetEventList}) {
     this.#eventListElement = eventListElement;
+    this.#handleDataChange = onDataChange;
+    this.#eventsModel = eventsModel;
+    this.#resetEventList = resetEventList;
   }
 
-  init({event, destination, offersInfo, cities, offers}) {
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.replaceFormToPoint();
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
+    }
+  };
+
+  #replacePointToForm() {
+    replace(this.#editEventElement, this.#eventElement);
+  }
+
+  replaceFormToPoint() {
+    replace(this.#eventElement, this.#editEventElement);
+  }
+
+  #handleFormSubmit = () => {
+    this.replaceFormToPoint();
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #handleFormClose = () => {
+    this.replaceFormToPoint();
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #handleFormEdit = () => {
+    this.#resetEventList();
+    this.#replacePointToForm();
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #handleFavoriteClick = () => {
+    this.#handleDataChange({...this.#event, isFavorite: !this.#event.isFavorite});
+  };
+
+  init({event}) {
     this.#event = event;
-    this.#destination = destination;
-    this.#offersInfo = offersInfo;
-    this.#cities = cities;
-    this.#offers = offers;
+    this.#destination = this.#eventsModel.getDestination(event.destination);
+    this.#offersInfo = event.offers.map((element) => this.#eventsModel.getOffer(event.type, element));
+    this.#cities = this.#eventsModel.cities;
+    this.#offers = this.#eventsModel.getOffers(event.type);
 
     const prevEventElement = this.#eventElement;
     const prevEditEventElement = this.#editEventElement;
@@ -32,10 +74,8 @@ export default class EventPresenter {
       event: this.#event,
       destination: this.#destination,
       offersInfo: this.#offersInfo,
-      onEditClick: () => {
-        this.#replacePointToForm();
-        document.addEventListener('keydown', this.#escKeyDownHandler);
-      }
+      onEditClick: this.#handleFormEdit,
+      onFavoriteClick: this.#handleFavoriteClick
     });
 
     this.#editEventElement = new EditEventView({
@@ -44,14 +84,8 @@ export default class EventPresenter {
       offers: this.#offers,
       eventTypes: EVENT_TYPES,
       cities: this.#cities,
-      onFormSubmit: () => {
-        this.#replaceFormToPoint();
-        document.removeEventListener('keydown', this.#escKeyDownHandler);
-      },
-      onFormClose: () => {
-        this.#replaceFormToPoint();
-        document.removeEventListener('keydown', this.#escKeyDownHandler);
-      }
+      onFormSubmit: this.#handleFormSubmit,
+      onFormClose: this.#handleFormClose
     });
 
     if (prevEventElement === null || prevEditEventElement === null) {
@@ -59,8 +93,6 @@ export default class EventPresenter {
       return;
     }
 
-    // Проверка на наличие в DOM необходима,
-    // чтобы не пытаться заменить то, что не было отрисовано
     if (this.#eventListElement.contains(prevEventElement.element)) {
       replace(this.#eventElement, prevEventElement);
     }
@@ -71,22 +103,6 @@ export default class EventPresenter {
 
     remove(prevEventElement);
     remove(prevEditEventElement);
-  }
-
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      this.#replaceFormToPoint();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    }
-  };
-
-  #replacePointToForm() {
-    replace(this.#editEventElement, this.#eventElement);
-  }
-
-  #replaceFormToPoint() {
-    replace(this.#eventElement, this.#editEventElement);
   }
 
   destroy() {
