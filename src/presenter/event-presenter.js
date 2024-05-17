@@ -3,55 +3,64 @@ import { remove, render, replace } from '../framework/render';
 import EditEventView from '../view/edit-event-view';
 import EventView from '../view/event-view';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class EventPresenter {
   #eventElement = null;
   #editEventElement = null;
   #eventListElement = null;
-  #handleDataChange = null;
   #eventsModel = null;
-  #resetEventList = null;
+
+  #handleDataChange = null;
+  #handleModeChange = null;
 
   #event = null;
   #destination = null;
   #offersInfo = null;
   #cities = null;
   #offers = null;
+  #mode = Mode.DEFAULT;
 
-  constructor({eventListElement, onDataChange, eventsModel, resetEventList}) {
+  constructor({eventListElement, onDataChange, eventsModel, onModeChange}) {
     this.#eventListElement = eventListElement;
     this.#handleDataChange = onDataChange;
     this.#eventsModel = eventsModel;
-    this.#resetEventList = resetEventList;
+    this.#handleModeChange = onModeChange;
   }
 
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
-      this.replaceFormToPoint();
+      this.#replaceFormToPoint();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
   };
 
   #replacePointToForm() {
     replace(this.#editEventElement, this.#eventElement);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
   }
 
-  replaceFormToPoint() {
+  #replaceFormToPoint() {
     replace(this.#eventElement, this.#editEventElement);
+    this.#mode = Mode.DEFAULT;
   }
 
   #handleFormSubmit = () => {
-    this.replaceFormToPoint();
+    this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
   #handleFormClose = () => {
-    this.replaceFormToPoint();
+    this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
   #handleFormEdit = () => {
-    this.#resetEventList();
     this.#replacePointToForm();
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
@@ -93,11 +102,11 @@ export default class EventPresenter {
       return;
     }
 
-    if (this.#eventListElement.contains(prevEventElement.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#eventElement, prevEventElement);
     }
 
-    if (this.#eventListElement.contains(prevEditEventElement.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#editEventElement, prevEditEventElement);
     }
 
@@ -108,6 +117,12 @@ export default class EventPresenter {
   destroy() {
     remove(this.#eventElement);
     remove(this.#editEventElement);
+  }
+
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToPoint();
+    }
   }
 
 }

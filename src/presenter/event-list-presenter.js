@@ -42,7 +42,7 @@ export default class EventListPresenter {
       eventListElement: this.#eventListComponent.element,
       onDataChange: this.#handleEventChange,
       eventsModel: this.#eventsModel,
-      resetEventList: this.#resetEventList
+      onModeChange: this.#handleModeChange
     });
     eventPresenter.init({event});
     this.#eventPresenters.set(event.id, eventPresenter);
@@ -61,7 +61,7 @@ export default class EventListPresenter {
     this.#eventPresenters.get(updatedEvent.id).init({event: updatedEvent});
   };
 
-  #resetEventList = () => this.#eventPresenters.forEach((eventPresenter) => eventPresenter.replaceFormToPoint());
+  #handleModeChange = () => this.#eventPresenters.forEach((presenter) => presenter.resetView());
 
   init() {
     this.#events = this.#eventsModel.events;
