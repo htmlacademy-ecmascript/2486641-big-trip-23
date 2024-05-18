@@ -5,7 +5,7 @@ const mockDestinations = [
     name: 'Tokio',
     pictures: [
       {
-        src: 'https://23.objects.htmlacademy.pro/static/destinations/7.jpg',
+        src: 'https://23.objects.htmlacademy.pro/static/destinations/6.jpg',
         description:
           'Tokio famous for its crowded street markets with the best street food in Asia',
       },
@@ -38,7 +38,7 @@ const mockDestinations = [
     name: 'Kioto',
     pictures: [
       {
-        src: 'https://23.objects.htmlacademy.pro/static/destinations/14.jpg',
+        src: 'https://23.objects.htmlacademy.pro/static/destinations/13.jpg',
         description:
           'Kioto famous for its crowded street markets with the best street food in Asia',
       },
@@ -48,7 +48,7 @@ const mockDestinations = [
           'Kioto full of of cozy canteens where you can try the best coffee in the Middle East',
       },
       {
-        src: 'https://23.objects.htmlacademy.pro/static/destinations/3.jpg',
+        src: 'https://23.objects.htmlacademy.pro/static/destinations/2.jpg',
         description: 'Kioto is a beautiful city',
       },
       {
@@ -177,11 +177,11 @@ const mockDestinations = [
         description: 'Monaco a true asian pearl',
       },
       {
-        src: 'https://23.objects.htmlacademy.pro/static/destinations/19.jpg',
+        src: 'https://23.objects.htmlacademy.pro/static/destinations/18.jpg',
         description: 'Monaco with a beautiful old town',
       },
       {
-        src: 'https://23.objects.htmlacademy.pro/static/destinations/5.jpg',
+        src: 'https://23.objects.htmlacademy.pro/static/destinations/4.jpg',
         description:
           'Monaco with an embankment of a mighty river as a centre of attraction',
       },

@@ -10,6 +10,7 @@ const createEditEventTemplate = (event, destination, offers, eventTypes, cities)
   )).join('');
 
   const destinationList = cities.map((element) => `<option value="${element}"></option>`);
+  const destinationPhotos = destination.pictures.map((element) => `<img class="event__photo" src="${element.src}" alt="Event photo">`).join('');
   const startDate = getFormattingDate(event.dateFrom, 'DD/MM/YY HH:mm');
   const endDate = getFormattingDate(event.dateTo, 'DD/MM/YY HH:mm');
   const offerSection = offers.map((element) => `<div class="event__offer-selector">
@@ -84,6 +85,11 @@ const createEditEventTemplate = (event, destination, offers, eventTypes, cities)
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
             <p class="event__destination-description">${destination.description}</p>
+              <div class="event__photos-container">
+                <div class="event__photos-tape">
+                  ${destinationPhotos}
+                </div>
+              </div>
           </section>
         </section>
       </form>
