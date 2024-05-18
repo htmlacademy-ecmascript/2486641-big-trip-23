@@ -51,9 +51,7 @@ export default class EventListPresenter {
   #renderTrip() {
     this.#renderSort();
     this.#renderEventList();
-    this.#events.forEach((event) => {
-      this.#renderEvent(event);
-    });
+    this.#events.forEach((event) => this.#renderEvent(event));
   }
 
   #handleEventChange = (updatedEvent) => {

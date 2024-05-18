@@ -124,5 +124,4 @@ export default class EventPresenter {
       this.#replaceFormToPoint();
     }
   }
-
 }
