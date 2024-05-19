@@ -7,12 +7,21 @@ const FilterType = {
   past: 'past',
 };
 
-const SORT_ITEMS = [
-  {value: 'day', label: 'Day'},
-  {value: 'event', label: 'Event'},
-  {value: 'time', label: 'Time'},
-  {value: 'price', label: 'Price'},
-  {value: 'offer', label: 'Offers'},
-];
+const SortType = {
+  day: 'day',
+  event: 'event',
+  time: 'time',
+  price: 'price',
+  offer: 'offer',
+};
 
-export {EVENT_TYPES, SORT_ITEMS, FilterType};
+const SORT_ITEMS = new Map ([
+  [SortType.day, {label: 'Day', available: true}],
+  [SortType.event, {label: 'Event', available: false}],
+  [SortType.time, {label: 'Time', available: true}],
+  [SortType.price, {label: 'Price', available: true}],
+  [SortType.offer, {label: 'Offers', available: false}],
+]);
+
+
+export {EVENT_TYPES, SORT_ITEMS, FilterType, SortType};

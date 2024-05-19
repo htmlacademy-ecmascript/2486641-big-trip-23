@@ -20,5 +20,16 @@ const getDuration = (dateFrom, dateTo) => {
   return `${days}D ${hours}H ${minutes}M`;
 };
 
+function sortByDay(eventA, eventB) {
+  return dayjs(eventA.dateFrom).diff(dayjs(eventB.dateFrom));
+}
 
-export { getFormattingDate, getDuration };
+function sortByTime(eventA, eventB) {
+  return dayjs(eventA.dateFrom).diff(dayjs(eventA.dateTo)) - dayjs(eventB.dateFrom).diff(dayjs(eventB.dateTo));
+}
+
+function sortByPrice(eventA, eventB) {
+  return eventB.basePrice - eventA.basePrice;
+}
+
+export { getFormattingDate, getDuration, sortByDay, sortByPrice, sortByTime };
