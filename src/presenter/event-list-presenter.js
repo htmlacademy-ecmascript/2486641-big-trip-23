@@ -1,7 +1,7 @@
-import { SORT_ITEMS, SortType } from '../const.js';
+import { SortItems, SortType } from '../const.js';
 import { render } from '../framework/render.js';
 import { updateItem } from '../utils/common.js';
-import { sortByDay, sortByPrice, sortByTime } from '../utils/event.js';
+import { SortRules } from '../utils/event.js';
 import AddEventView from '../view/add-event-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import EventListView from '../view/event-list-view.js';
@@ -16,7 +16,7 @@ export default class EventListPresenter {
   #eventsModel = null;
   #events = [];
   #eventPresenters = new Map();
-  #currentSortType = SortType.day;
+  #currentSortType = SortType.DAY;
 
   constructor({container, eventsModel}) {
     this.#container = container;
@@ -36,7 +36,7 @@ export default class EventListPresenter {
   }
 
   #renderSort(){
-    this.#sortComponent = new SortView({sortItems: SORT_ITEMS, onSortTypeChange: this.#handleSortTypeChange});
+    this.#sortComponent = new SortView({sortItems: SortItems, onSortTypeChange: this.#handleSortTypeChange});
     render(this.#sortComponent, this.#container);
   }
 
@@ -79,18 +79,7 @@ export default class EventListPresenter {
   };
 
   #sortEvents(sortType) {
-    switch (sortType) {
-      case SortType.day:
-        this.#events.sort(sortByDay);
-        break;
-      case SortType.time:
-        this.#events.sort(sortByTime);
-        break;
-      case SortType.price:
-        this.#events.sort(sortByPrice);
-        break;
-    }
-
+    this.#events.sort(SortRules[sortType]);
     this.#currentSortType = sortType;
   }
 
