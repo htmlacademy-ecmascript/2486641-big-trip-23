@@ -1,6 +1,7 @@
-import { SORT_ITEMS } from '../const.js';
+import { SortItems, SortType } from '../const.js';
 import { render } from '../framework/render.js';
 import { updateItem } from '../utils/common.js';
+import { SortRules } from '../utils/event.js';
 import AddEventView from '../view/add-event-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import EventListView from '../view/event-list-view.js';
@@ -9,20 +10,25 @@ import EventPresenter from './event-presenter.js';
 
 export default class EventListPresenter {
   #eventListComponent = new EventListView();
-  #sortComponent = new SortView(SORT_ITEMS);
+  #sortComponent = null;
   #emptyListComponent = new EmptyListView();
   #container = null;
   #eventsModel = null;
   #events = [];
   #eventPresenters = new Map();
+  #currentSortType = SortType.DAY;
 
   constructor({container, eventsModel}) {
     this.#container = container;
     this.#eventsModel = eventsModel;
   }
 
-  #renderEventList(){
+  #renderEventContainer(){
     render(this.#eventListComponent, this.#container);
+  }
+
+  #renderEventList(){
+    this.#events.forEach((event) => this.#renderEvent(event));
   }
 
   #renderAddEvent(){
@@ -30,6 +36,7 @@ export default class EventListPresenter {
   }
 
   #renderSort(){
+    this.#sortComponent = new SortView({sortItems: SortItems, onSortTypeChange: this.#handleSortTypeChange});
     render(this.#sortComponent, this.#container);
   }
 
@@ -50,8 +57,8 @@ export default class EventListPresenter {
 
   #renderTrip() {
     this.#renderSort();
+    this.#renderEventContainer();
     this.#renderEventList();
-    this.#events.forEach((event) => this.#renderEvent(event));
   }
 
   #handleEventChange = (updatedEvent) => {
@@ -61,8 +68,29 @@ export default class EventListPresenter {
 
   #handleModeChange = () => this.#eventPresenters.forEach((presenter) => presenter.resetView());
 
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortEvents(sortType);
+    this.#clearEventList();
+    this.#renderEventList();
+  };
+
+  #sortEvents(sortType) {
+    this.#events.sort(SortRules[sortType]);
+    this.#currentSortType = sortType;
+  }
+
+  #clearEventList() {
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+  }
+
   init() {
     this.#events = this.#eventsModel.events;
+    this.#sortEvents(this.#currentSortType);
     if (!this.#events.length) {
       this.#renderEmptyList();
       return;

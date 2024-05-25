@@ -2,8 +2,8 @@ const mockEvents = [
   {
     'id': '3470cafa-31a4-4b71-8e33-bd3c3df7df38',
     'basePrice': 174,
-    'dateFrom': '2024-04-15T15:08:07.164Z',
-    'dateTo': '2024-04-17T15:10:07.164Z',
+    'dateFrom': '2024-07-15T15:08:07.164Z',
+    'dateTo': '2024-07-17T15:10:07.164Z',
     'destination': 'e5c26d80-c07c-4012-8d46-d510fdb2c79c',
     'isFavorite': true,
     'offers': [],

@@ -7,12 +7,21 @@ const FilterType = {
   past: 'past',
 };
 
-const SORT_ITEMS = [
-  {value: 'day', label: 'Day'},
-  {value: 'event', label: 'Event'},
-  {value: 'time', label: 'Time'},
-  {value: 'price', label: 'Price'},
-  {value: 'offer', label: 'Offers'},
-];
+const SortType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFER: 'offer',
+};
 
-export {EVENT_TYPES, SORT_ITEMS, FilterType};
+const SortItems = {
+  [SortType.DAY]: {label: 'Day', available: true},
+  [SortType.EVENT]: {label: 'Event', available: false},
+  [SortType.TIME]: {label: 'Time', available: true},
+  [SortType.PRICE]: {label: 'Price', available: true},
+  [SortType.OFFER]: {label: 'Offers', available: false},
+};
+
+
+export {EVENT_TYPES, SortItems, FilterType, SortType};

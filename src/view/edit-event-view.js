@@ -14,8 +14,8 @@ const createEditEventTemplate = (event, destination, offers, eventTypes, cities)
   const startDate = getFormattingDate(event.dateFrom, 'DD/MM/YY HH:mm');
   const endDate = getFormattingDate(event.dateTo, 'DD/MM/YY HH:mm');
   const offerSection = offers.map((element) => `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${event.offers.includes(element.id) ? 'checked' : ''}>
-    <label class="event__offer-label" for="event-offer-luggage-1">
+    <input class="event__offer-checkbox  visually-hidden" id="${element.id}" type="checkbox" name="event-offer-luggage" ${event.offers.includes(element.id) ? 'checked' : ''}>
+    <label class="event__offer-label" for="${element.id}">
       <span class="event__offer-title">${element.title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${element.price}</span>
