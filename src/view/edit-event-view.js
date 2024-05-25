@@ -1,15 +1,15 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { getFormattingDate } from '../utils/event.js';
 
 const createEditEventTemplate = (event, destination, offers, eventTypes, cities) => {
   const eventTypeItems = eventTypes.map((type) => (
     `<div class="event__type-item">
-    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${event.type === type ? 'checked' : ''}>
     <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type[0].toUpperCase() + type.slice(1)}</label>
   </div>`
   )).join('');
 
-  const destinationList = cities.map((element) => `<option value="${element}"></option>`);
+  const destinationList = cities.map((element) => `<option value="${element.name}"></option>`);
   const destinationPhotos = destination.pictures.map((element) => `<img class="event__photo" src="${element.src}" alt="Event photo">`).join('');
   const startDate = getFormattingDate(event.dateFrom, 'DD/MM/YY HH:mm');
   const endDate = getFormattingDate(event.dateTo, 'DD/MM/YY HH:mm');
@@ -98,8 +98,7 @@ const createEditEventTemplate = (event, destination, offers, eventTypes, cities)
 };
 
 
-export default class EditEventView extends AbstractView {
-  #event = null;
+export default class EditEventView extends AbstractStatefulView {
   #destination = null;
   #offers = null;
   #eventTypes = null;
@@ -108,7 +107,7 @@ export default class EditEventView extends AbstractView {
   #handleFormClose = null;
   constructor({event, destination, offers, eventTypes, cities, onFormSubmit, onFormClose}){
     super();
-    this.#event = event;
+    this._setState(EditEventView.parseEventToState(event));
     this.#destination = destination;
     this.#offers = offers;
     this.#eventTypes = eventTypes;
@@ -116,15 +115,25 @@ export default class EditEventView extends AbstractView {
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormClose = onFormClose;
 
+    this._restoreHandlers();
+  }
+
+  get template() {
+    return createEditEventTemplate(this._state, this.#destination, this.#offers, this.#eventTypes, this.#cities);
+  }
+
+  _restoreHandlers() {
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
 
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#formCloseHandler);
-  }
 
-  get template() {
-    return createEditEventTemplate(this.#event, this.#destination, this.#offers, this.#eventTypes, this.#cities);
+    this.element.querySelector('.event__type-group')
+      .addEventListener('change', this.#typeChangeHandler);
+
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('change', this.#destinationChangeHandler);
   }
 
   #formSubmitHandler = (evt) => {
@@ -137,4 +146,29 @@ export default class EditEventView extends AbstractView {
     this.#handleFormClose();
   };
 
+  #typeChangeHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      type: evt.target.value
+    });
+    console.log(evt.target.value);
+  };
+
+  #destinationChangeHandler = (evt) => {
+    //evt.preventDefault();
+    // this.updateElement({
+    //   destination: evt.target.destinationId
+    // });
+    console.log(evt.target);
+  };
+
+  static parseEventToState(event) {
+    return {...event};
+  }
+
+  static parseStateToEvent(state) {
+    const event = {...state};
+
+    return event;
+  }
 }

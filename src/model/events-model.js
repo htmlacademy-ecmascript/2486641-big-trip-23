@@ -18,7 +18,8 @@ export default class EventsModel {
   }
 
   get cities () {
-    return this.#destinations.map((element) => element.name);
+    //return this.#destinations.map((element) => element.name);
+    return this.#destinations;
   }
 
   getOffers(type) {
