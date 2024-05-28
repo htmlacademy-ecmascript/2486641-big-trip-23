@@ -20,8 +20,9 @@ export default class EventPresenter {
   #event = null;
   #destination = null;
   #offersInfo = null;
-  #cities = null;
+  #destinations = null;
   #offers = null;
+  #eventTypes = EVENT_TYPES;
   #mode = Mode.DEFAULT;
 
   constructor({eventListElement, onDataChange, eventsModel, onModeChange}) {
@@ -73,12 +74,11 @@ export default class EventPresenter {
     this.#event = event;
     this.#destination = this.#eventsModel.getDestination(event.destination);
     this.#offersInfo = event.offers.map((element) => this.#eventsModel.getOffer(event.type, element));
-    this.#cities = this.#eventsModel.cities;
-    this.#offers = this.#eventsModel.getOffers(event.type);
+    this.#destinations = this.#eventsModel.destinations;
+    this.#offers = this.#eventsModel.getOffers();
 
     const prevEventElement = this.#eventElement;
     const prevEditEventElement = this.#editEventElement;
-
     this.#eventElement = new EventView({
       event: this.#event,
       destination: this.#destination,
@@ -89,10 +89,9 @@ export default class EventPresenter {
 
     this.#editEventElement = new EditEventView({
       event: this.#event,
-      destination: this.#destination,
       offers: this.#offers,
-      eventTypes: EVENT_TYPES,
-      cities: this.#cities,
+      eventTypes: this.#eventTypes,
+      destinations: this.#destinations,
       onFormSubmit: this.#handleFormSubmit,
       onFormClose: this.#handleFormClose
     });

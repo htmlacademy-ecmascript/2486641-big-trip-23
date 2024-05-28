@@ -1,19 +1,21 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { getFormattingDate } from '../utils/event.js';
 
-const createEditEventTemplate = (event, destination, offers, eventTypes, cities) => {
+const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
   const eventTypeItems = eventTypes.map((type) => (
     `<div class="event__type-item">
-    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${event.type === type ? 'checked' : ''}>
     <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type[0].toUpperCase() + type.slice(1)}</label>
   </div>`
   )).join('');
 
-  const destinationList = cities.map((element) => `<option value="${element}"></option>`);
+  const offersByType = offers.find((element) => element.type === event.type).offers;
+  const destination = destinations.find((element) => element.id === event.destination);
+  const destinationList = destinations.map((element) => `<option value="${element.name}"></option>`).join('');
   const destinationPhotos = destination.pictures.map((element) => `<img class="event__photo" src="${element.src}" alt="Event photo">`).join('');
   const startDate = getFormattingDate(event.dateFrom, 'DD/MM/YY HH:mm');
   const endDate = getFormattingDate(event.dateTo, 'DD/MM/YY HH:mm');
-  const offerSection = offers.map((element) => `<div class="event__offer-selector">
+  const offerSection = offersByType.map((element) => `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="${element.id}" type="checkbox" name="event-offer-luggage" ${event.offers.includes(element.id) ? 'checked' : ''}>
     <label class="event__offer-label" for="${element.id}">
       <span class="event__offer-title">${element.title}</span>
@@ -97,34 +99,45 @@ const createEditEventTemplate = (event, destination, offers, eventTypes, cities)
   );
 };
 
-
-export default class EditEventView extends AbstractView {
-  #event = null;
-  #destination = null;
+export default class EditEventView extends AbstractStatefulView {
   #offers = null;
   #eventTypes = null;
-  #cities = null;
+  #destinations = null;
   #handleFormSubmit = null;
   #handleFormClose = null;
-  constructor({event, destination, offers, eventTypes, cities, onFormSubmit, onFormClose}){
+  constructor({event, offers, eventTypes, destinations, onFormSubmit, onFormClose}){
     super();
-    this.#event = event;
-    this.#destination = destination;
+    this._setState(EditEventView.parseEventToState(event));
     this.#offers = offers;
     this.#eventTypes = eventTypes;
-    this.#cities = cities;
+    this.#destinations = destinations;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormClose = onFormClose;
 
+    this._restoreHandlers();
+  }
+
+  get template() {
+    return createEditEventTemplate({
+      event: this._state,
+      eventTypes: this.#eventTypes,
+      destinations: this.#destinations,
+      offers: this.#offers
+    });
+  }
+
+  _restoreHandlers() {
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
 
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#formCloseHandler);
-  }
 
-  get template() {
-    return createEditEventTemplate(this.#event, this.#destination, this.#offers, this.#eventTypes, this.#cities);
+    this.element.querySelector('.event__type-group')
+      .addEventListener('change', this.#typeChangeHandler);
+
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('change', this.#destinationChangeHandler);
   }
 
   #formSubmitHandler = (evt) => {
@@ -137,4 +150,27 @@ export default class EditEventView extends AbstractView {
     this.#handleFormClose();
   };
 
+  #typeChangeHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      type: evt.target.value
+    });
+  };
+
+  #destinationChangeHandler = (evt) => {
+    const destiantion = this.#destinations.find((element) => element.name === evt.target.value);
+    this.updateElement({
+      destination: destiantion.id
+    });
+  };
+
+  static parseEventToState(event) {
+    return {...event};
+  }
+
+  static parseStateToEvent(state) {
+    const event = {...state};
+
+    return event;
+  }
 }
