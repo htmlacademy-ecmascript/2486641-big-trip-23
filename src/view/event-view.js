@@ -1,14 +1,15 @@
+import { DateFormat } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import { getDuration, getFormattingDate } from '../utils/event.js';
 
 const createEventTemplate = (event, destination, offersInfo) => {
   const {basePrice, dateFrom, dateTo, isFavorite, type} = event;
   const favoriteClass = isFavorite ? 'event__favorite-btn--active' : '';
-  const printDate = getFormattingDate(dateFrom, 'MMM D');
-  const startDate = getFormattingDate(dateFrom, 'YYYY-MM-DDTHH:mm');
-  const endDate = getFormattingDate(dateTo, 'YYYY-MM-DDTHH:mm');
-  const startTime = getFormattingDate(dateFrom, 'HH:mm');
-  const endTime = getFormattingDate(dateTo, 'HH:mm');
+  const printDate = getFormattingDate(dateFrom, DateFormat.POINT_DAY);
+  const startDate = getFormattingDate(dateFrom, DateFormat.FULL_DATETIME);
+  const endDate = getFormattingDate(dateTo, DateFormat.FULL_DATETIME);
+  const startTime = getFormattingDate(dateFrom, DateFormat.POINT_TIME);
+  const endTime = getFormattingDate(dateTo, DateFormat.POINT_TIME);
   const eventDuration = getDuration(dateFrom, dateTo);
   const selectedOffers = offersInfo.map((element) => (
     `<li class="event__offer">
