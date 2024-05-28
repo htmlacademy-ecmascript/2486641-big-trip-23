@@ -2,4 +2,8 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
-export {updateItem};
+function getArrayElement(array, value, field = 'id') {
+  return array.find((element) => element[`${field}`] === value);
+}
+
+export {updateItem, getArrayElement};

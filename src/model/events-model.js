@@ -1,31 +1,11 @@
 import { getMockEvents } from '../mock/event.js';
-import { getMockDestinations } from '../mock/destination.js';
-import { getMockOffers } from '../mock/offer.js';
+import Observable from '../framework/observable.js';
 
-export default class EventsModel {
+export default class EventsModel extends Observable {
   #events = getMockEvents();
-  #destinations = getMockDestinations();
-  #offers = getMockOffers();
-
-  constructor(){}
 
   get events() {
     return this.#events;
   }
-
-  get destinations() {
-    return this.#destinations;
-  }
-
-  getOffers(type) {
-    if (type) {
-      return this.#offers.find((element) => element.type === type).offers;
-    }
-    return this.#offers;
-  }
-
-  getDestination = (id) => this.#destinations.find((element) => element.id === id);
-
-  getOffer = (type, id) => this.getOffers(type).find((element) => element.id === id);
 
 }

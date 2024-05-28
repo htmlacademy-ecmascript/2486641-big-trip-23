@@ -1,5 +1,6 @@
 import { EVENT_TYPES } from '../const';
 import { remove, render, replace } from '../framework/render';
+import { getArrayElement } from '../utils/common';
 import EditEventView from '../view/edit-event-view';
 import EventView from '../view/event-view';
 
@@ -12,7 +13,7 @@ export default class EventPresenter {
   #eventElement = null;
   #editEventElement = null;
   #eventListElement = null;
-  #eventsModel = null;
+  //#eventsModel = null;
 
   #handleDataChange = null;
   #handleModeChange = null;
@@ -25,11 +26,13 @@ export default class EventPresenter {
   #eventTypes = EVENT_TYPES;
   #mode = Mode.DEFAULT;
 
-  constructor({eventListElement, onDataChange, eventsModel, onModeChange}) {
+  constructor({eventListElement, onDataChange, onModeChange, destinations, offers}) {
     this.#eventListElement = eventListElement;
     this.#handleDataChange = onDataChange;
-    this.#eventsModel = eventsModel;
+    //this.#eventsModel = eventsModel;
     this.#handleModeChange = onModeChange;
+    this.#destinations = destinations;
+    this.#offers = offers;
   }
 
   #escKeyDownHandler = (evt) => {
@@ -72,10 +75,11 @@ export default class EventPresenter {
 
   init({event}) {
     this.#event = event;
-    this.#destination = this.#eventsModel.getDestination(event.destination);
-    this.#offersInfo = event.offers.map((element) => this.#eventsModel.getOffer(event.type, element));
-    this.#destinations = this.#eventsModel.destinations;
-    this.#offers = this.#eventsModel.getOffers();
+    this.#destination = this.#destinations.find((element) => element.id === this.#event.destination);// this.#eventsModel.getDestination(event.destination);
+    const offersByType = getArrayElement(this.#offers, this.#event.type, 'type').offers;
+    this.#offersInfo = this.#event.offers.map((element) => getArrayElement(offersByType, element));
+    //this.#destinations = this.#eventsModel.destinations;
+    //this.#offers = this.#eventsModel.getOffers();
 
     const prevEventElement = this.#eventElement;
     const prevEditEventElement = this.#editEventElement;

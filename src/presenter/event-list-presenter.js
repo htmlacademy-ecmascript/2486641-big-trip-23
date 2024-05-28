@@ -14,13 +14,29 @@ export default class EventListPresenter {
   #emptyListComponent = new EmptyListView();
   #container = null;
   #eventsModel = null;
-  #events = [];
+  #destinationModel = null;
+  #offersModel = null;
+  //#events = [];
   #eventPresenters = new Map();
   #currentSortType = SortType.DAY;
 
-  constructor({container, eventsModel}) {
+  constructor({container, eventsModel, destinationsModel, offersModel}) {
     this.#container = container;
     this.#eventsModel = eventsModel;
+    this.#destinationModel = destinationsModel;
+    this.#offersModel = offersModel;
+  }
+
+  get events() {
+    return this.#eventsModel.events;
+  }
+
+  get destinations() {
+    return this.#destinationModel.destinations;
+  }
+
+  get offers() {
+    return this.#offersModel.offers;
   }
 
   #renderEventContainer(){
@@ -28,7 +44,7 @@ export default class EventListPresenter {
   }
 
   #renderEventList(){
-    this.#events.forEach((event) => this.#renderEvent(event));
+    this.events.forEach((event) => this.#renderEvent(event));
   }
 
   #renderAddEvent(){
@@ -48,8 +64,10 @@ export default class EventListPresenter {
     const eventPresenter = new EventPresenter({
       eventListElement: this.#eventListComponent.element,
       onDataChange: this.#handleEventChange,
-      eventsModel: this.#eventsModel,
-      onModeChange: this.#handleModeChange
+      //eventsModel: this.#eventsModel,
+      onModeChange: this.#handleModeChange,
+      destinations: this.destinations,
+      offers: this.offers,
     });
     eventPresenter.init({event});
     this.#eventPresenters.set(event.id, eventPresenter);
@@ -62,7 +80,7 @@ export default class EventListPresenter {
   }
 
   #handleEventChange = (updatedEvent) => {
-    this.#events = updateItem(this.#events, updatedEvent);
+    this.events = updateItem(this.events, updatedEvent);
     this.#eventPresenters.get(updatedEvent.id).init({event: updatedEvent});
   };
 
@@ -79,7 +97,7 @@ export default class EventListPresenter {
   };
 
   #sortEvents(sortType) {
-    this.#events.sort(SortRules[sortType]);
+    this.events.sort(SortRules[sortType]);
     this.#currentSortType = sortType;
   }
 
@@ -89,9 +107,8 @@ export default class EventListPresenter {
   }
 
   init() {
-    this.#events = this.#eventsModel.events;
     this.#sortEvents(this.#currentSortType);
-    if (!this.#events.length) {
+    if (!this.events.length) {
       this.#renderEmptyList();
       return;
     }

@@ -11,7 +11,6 @@ const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
     <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type[0].toUpperCase() + type.slice(1)}</label>
   </div>`
   )).join('');
-
   const offersByType = offers.find((element) => element.type === event.type).offers;
   const destination = destinations.find((element) => element.id === event.destination);
   const destinationList = destinations.map((element) => `<option value="${element.name}"></option>`).join('');
