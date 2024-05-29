@@ -1,6 +1,5 @@
-import { SortItems, SortType } from '../const.js';
+import { SortItems, SortType, UpdateType, UserAction } from '../const.js';
 import { render } from '../framework/render.js';
-import { updateItem } from '../utils/common.js';
 import { SortRules } from '../utils/event.js';
 import AddEventView from '../view/add-event-view.js';
 import EmptyListView from '../view/empty-list-view.js';
@@ -16,7 +15,6 @@ export default class EventListPresenter {
   #eventsModel = null;
   #destinationModel = null;
   #offersModel = null;
-  //#events = [];
   #eventPresenters = new Map();
   #currentSortType = SortType.DAY;
 
@@ -25,6 +23,7 @@ export default class EventListPresenter {
     this.#eventsModel = eventsModel;
     this.#destinationModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#eventsModel.addObserver(this.#handleModelEvent);
   }
 
   get events() {
@@ -38,6 +37,38 @@ export default class EventListPresenter {
   get offers() {
     return this.#offersModel.offers;
   }
+
+  #handleViewAction = (actionType, updateType, update) => {
+    //console.log(actionType, updateType, update);
+    switch (actionType) {
+      case UserAction.UPDATE_EVENT:
+        this.#eventsModel.updateEvent(updateType, update);
+        break;
+      case UserAction.ADD_EVENT:
+        this.#eventsModel.addEvent(updateType, update);
+        break;
+      case UserAction.DELETE_EVENT:
+        this.#eventsModel.deleteEvent(updateType, update);
+        break;
+    }
+  };
+
+  #handleModelEvent = (updateType, data) => {
+    //console.log(updateType, data);
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#eventPresenters.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        this.#clearEventList();
+        this.#renderTrip();
+        break;
+      case UpdateType.MAJOR:
+        this.#clearEventList();
+        this.#renderTrip();
+        break;
+    }
+  };
 
   #renderEventContainer(){
     render(this.#eventListComponent, this.#container);
@@ -63,26 +94,19 @@ export default class EventListPresenter {
   #renderEvent(event){
     const eventPresenter = new EventPresenter({
       eventListElement: this.#eventListComponent.element,
-      onDataChange: this.#handleEventChange,
-      //eventsModel: this.#eventsModel,
+      onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange,
       destinations: this.destinations,
       offers: this.offers,
     });
-    eventPresenter.init({event});
+    eventPresenter.init(event);
     this.#eventPresenters.set(event.id, eventPresenter);
   }
 
   #renderTrip() {
-    this.#renderSort();
     this.#renderEventContainer();
     this.#renderEventList();
   }
-
-  #handleEventChange = (updatedEvent) => {
-    this.events = updateItem(this.events, updatedEvent);
-    this.#eventPresenters.get(updatedEvent.id).init({event: updatedEvent});
-  };
 
   #handleModeChange = () => this.#eventPresenters.forEach((presenter) => presenter.resetView());
 
@@ -112,6 +136,7 @@ export default class EventListPresenter {
       this.#renderEmptyList();
       return;
     }
+    this.#renderSort();
     this.#renderTrip();
   }
 }

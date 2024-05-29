@@ -1,5 +1,3 @@
-const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
-
 /**
  * Возвращает найденый элемент из массива объектов
  * @param {Array} array - исходный массив
@@ -9,4 +7,4 @@ const updateItem = (items, update) => items.map((item) => item.id === update.id 
  */
 const getArrayElement = (array, value, field = 'id') => array.find((element) => element[`${field}`] === value);
 
-export {updateItem, getArrayElement};
+export {getArrayElement};

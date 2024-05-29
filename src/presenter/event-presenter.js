@@ -1,4 +1,4 @@
-import { EVENT_TYPES } from '../const';
+import { EVENT_TYPES, UpdateType, UserAction } from '../const';
 import { remove, render, replace } from '../framework/render';
 import { getArrayElement } from '../utils/common';
 import EditEventView from '../view/edit-event-view';
@@ -52,7 +52,12 @@ export default class EventPresenter {
     this.#mode = Mode.DEFAULT;
   }
 
-  #handleFormSubmit = () => {
+  #handleFormSubmit = (event) => {
+    this.#handleDataChange(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MAJOR,
+      event
+    );
     this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
@@ -68,10 +73,22 @@ export default class EventPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#event, isFavorite: !this.#event.isFavorite});
+    this.#handleDataChange(
+      UserAction.UPDATE_EVENT,
+      UpdateType.PATCH,
+      {...this.#event, isFavorite: !this.#event.isFavorite}
+    );
   };
 
-  init({event}) {
+  #handleDeleteClick = (event) => {
+    this.#handleDataChange(
+      UserAction.DELETE_EVENT,
+      UpdateType.MINOR,
+      event,
+    );
+  };
+
+  init(event) {
     this.#event = event;
     this.#destination = getArrayElement(this.#destinations, this.#event.destination);
     const offersByType = getArrayElement(this.#offers, this.#event.type, 'type').offers;
@@ -93,7 +110,8 @@ export default class EventPresenter {
       eventTypes: this.#eventTypes,
       destinations: this.#destinations,
       onFormSubmit: this.#handleFormSubmit,
-      onFormClose: this.#handleFormClose
+      onFormClose: this.#handleFormClose,
+      onDeleteClick: this.#handleDeleteClick,
     });
 
     if (prevEventElement === null || prevEditEventElement === null) {

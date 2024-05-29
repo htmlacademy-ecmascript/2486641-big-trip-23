@@ -110,7 +110,8 @@ export default class EditEventView extends AbstractStatefulView {
   #handleFormClose = null;
   #startDatepicker = null;
   #endDatepicker = null;
-  constructor({event, offers, eventTypes, destinations, onFormSubmit, onFormClose}){
+  #handleDeleteClick = null;
+  constructor({event, offers, eventTypes, destinations, onFormSubmit, onFormClose, onDeleteClick}){
     super();
     this._setState(EditEventView.parseEventToState(event));
     this.#offers = offers;
@@ -118,6 +119,7 @@ export default class EditEventView extends AbstractStatefulView {
     this.#destinations = destinations;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormClose = onFormClose;
+    this.#handleDeleteClick = onDeleteClick;
 
     this._restoreHandlers();
   }
@@ -147,22 +149,26 @@ export default class EditEventView extends AbstractStatefulView {
   _restoreHandlers() {
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
-
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#formCloseHandler);
-
     this.element.querySelector('.event__type-group')
       .addEventListener('change', this.#typeChangeHandler);
-
     this.element.querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__reset-btn')
+      .addEventListener('click', this.#formDeleteClickHandler);
     this.#setStartDatepicker();
     this.#setEndDatepicker();
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit();
+    this.#handleFormSubmit(EditEventView.parseStateToEvent(this._state));
+  };
+
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(EditEventView.parseStateToEvent(this._state));
   };
 
   #formCloseHandler = (evt) => {
@@ -179,9 +185,11 @@ export default class EditEventView extends AbstractStatefulView {
 
   #destinationChangeHandler = (evt) => {
     const destiantion = getArrayElement(this.#destinations, evt.target.value, 'name');
-    this.updateElement({
-      destination: destiantion.id
-    });
+    if (destiantion) {
+      this.updateElement({
+        destination: destiantion.id
+      });
+    }
   };
 
   #startDateChangeHandler = ([userDate]) => {
