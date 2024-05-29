@@ -3,6 +3,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { getFormattingDate } from '../utils/event.js';
 import 'flatpickr/dist/flatpickr.min.css';
 import { DateFormat } from '../const.js';
+import { getArrayElement } from '../utils/common.js';
 
 const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
   const eventTypeItems = eventTypes.map((type) => (
@@ -11,8 +12,8 @@ const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
     <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type[0].toUpperCase() + type.slice(1)}</label>
   </div>`
   )).join('');
-  const offersByType = offers.find((element) => element.type === event.type).offers;
-  const destination = destinations.find((element) => element.id === event.destination);
+  const offersByType = getArrayElement(offers, event.type, 'type').offers;
+  const destination = getArrayElement(destinations, event.destination);
   const destinationList = destinations.map((element) => `<option value="${element.name}"></option>`).join('');
   const destinationPhotos = destination.pictures.map((element) => `<img class="event__photo" src="${element.src}" alt="Event photo">`).join('');
   const startDate = getFormattingDate(event.dateFrom, DateFormat.FORM_DATE);
@@ -177,7 +178,7 @@ export default class EditEventView extends AbstractStatefulView {
   };
 
   #destinationChangeHandler = (evt) => {
-    const destiantion = this.#destinations.find((element) => element.name === evt.target.value);
+    const destiantion = getArrayElement(this.#destinations, evt.target.value);
     this.updateElement({
       destination: destiantion.id
     });

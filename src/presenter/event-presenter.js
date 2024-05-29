@@ -13,7 +13,6 @@ export default class EventPresenter {
   #eventElement = null;
   #editEventElement = null;
   #eventListElement = null;
-  //#eventsModel = null;
 
   #handleDataChange = null;
   #handleModeChange = null;
@@ -29,7 +28,6 @@ export default class EventPresenter {
   constructor({eventListElement, onDataChange, onModeChange, destinations, offers}) {
     this.#eventListElement = eventListElement;
     this.#handleDataChange = onDataChange;
-    //this.#eventsModel = eventsModel;
     this.#handleModeChange = onModeChange;
     this.#destinations = destinations;
     this.#offers = offers;
@@ -75,11 +73,9 @@ export default class EventPresenter {
 
   init({event}) {
     this.#event = event;
-    this.#destination = this.#destinations.find((element) => element.id === this.#event.destination);// this.#eventsModel.getDestination(event.destination);
+    this.#destination = getArrayElement(this.#destinations, this.#event.destination);
     const offersByType = getArrayElement(this.#offers, this.#event.type, 'type').offers;
     this.#offersInfo = this.#event.offers.map((element) => getArrayElement(offersByType, element));
-    //this.#destinations = this.#eventsModel.destinations;
-    //this.#offers = this.#eventsModel.getOffers();
 
     const prevEventElement = this.#eventElement;
     const prevEditEventElement = this.#editEventElement;

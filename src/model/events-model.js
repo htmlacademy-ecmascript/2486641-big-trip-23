@@ -7,5 +7,4 @@ export default class EventsModel extends Observable {
   get events() {
     return this.#events;
   }
-
 }
