@@ -178,7 +178,7 @@ export default class EditEventView extends AbstractStatefulView {
   };
 
   #destinationChangeHandler = (evt) => {
-    const destiantion = getArrayElement(this.#destinations, evt.target.value);
+    const destiantion = getArrayElement(this.#destinations, evt.target.value, 'name');
     this.updateElement({
       destination: destiantion.id
     });
