@@ -1,6 +1,7 @@
 import { SortItems, SortType, UpdateType, UserAction } from '../const.js';
 import { render } from '../framework/render.js';
 import { SortRules } from '../utils/event.js';
+import { filter } from '../utils/filter.js';
 import AddEventView from '../view/add-event-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import EventListView from '../view/event-list-view.js';
@@ -17,17 +18,24 @@ export default class EventListPresenter {
   #offersModel = null;
   #eventPresenters = new Map();
   #currentSortType = SortType.DAY;
+  #filterModel = null;
 
-  constructor({container, eventsModel, destinationsModel, offersModel}) {
+  constructor({container, eventsModel, destinationsModel, offersModel, filterModel}) {
     this.#container = container;
     this.#eventsModel = eventsModel;
     this.#destinationModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#filterModel = filterModel;
+
     this.#eventsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get events() {
-    return this.#eventsModel.events;
+    const filterType = this.#filterModel.filter;
+    const events = this.#eventsModel.events;
+    const filteredEvents = filter[filterType](events);
+    return filteredEvents;
   }
 
   get destinations() {
@@ -39,7 +47,6 @@ export default class EventListPresenter {
   }
 
   #handleViewAction = (actionType, updateType, update) => {
-    //console.log(actionType, updateType, update);
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
         this.#eventsModel.updateEvent(updateType, update);
@@ -54,7 +61,6 @@ export default class EventListPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    //console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
         this.#eventPresenters.get(data.id).init(data);
