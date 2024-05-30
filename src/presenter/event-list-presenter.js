@@ -1,5 +1,5 @@
-import { SortItems, SortType, UpdateType, UserAction } from '../const.js';
-import { render } from '../framework/render.js';
+import { FilterType, SortItems, SortType, UpdateType, UserAction } from '../const.js';
+import { remove, render } from '../framework/render.js';
 import { SortRules } from '../utils/event.js';
 import { filter } from '../utils/filter.js';
 import AddEventView from '../view/add-event-view.js';
@@ -11,7 +11,7 @@ import EventPresenter from './event-presenter.js';
 export default class EventListPresenter {
   #eventListComponent = new EventListView();
   #sortComponent = null;
-  #emptyListComponent = new EmptyListView();
+  #emptyListComponent = null;
   #container = null;
   #eventsModel = null;
   #destinationModel = null;
@@ -19,6 +19,7 @@ export default class EventListPresenter {
   #eventPresenters = new Map();
   #currentSortType = SortType.DAY;
   #filterModel = null;
+  #filterType = FilterType.EVERYTHING;
 
   constructor({container, eventsModel, destinationsModel, offersModel, filterModel}) {
     this.#container = container;
@@ -32,9 +33,9 @@ export default class EventListPresenter {
   }
 
   get events() {
-    const filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const events = this.#eventsModel.events;
-    const filteredEvents = filter[filterType](events);
+    const filteredEvents = filter[this.#filterType](events);
     return filteredEvents;
   }
 
@@ -94,6 +95,7 @@ export default class EventListPresenter {
   }
 
   #renderEmptyList(){
+    this.#emptyListComponent = new EmptyListView(this.#filterType);
     render(this.#emptyListComponent, this.#container);
   }
 
@@ -110,6 +112,10 @@ export default class EventListPresenter {
   }
 
   #renderTrip() {
+    if (!this.events.length) {
+      this.#renderEmptyList();
+      return;
+    }
     this.#renderEventContainer();
     this.#renderEventList();
   }
@@ -134,14 +140,13 @@ export default class EventListPresenter {
   #clearEventList() {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
+    if (this.#emptyListComponent) {
+      remove(this.#emptyListComponent);
+    }
   }
 
   init() {
     this.#sortEvents(this.#currentSortType);
-    if (!this.events.length) {
-      this.#renderEmptyList();
-      return;
-    }
     this.#renderSort();
     this.#renderTrip();
   }
