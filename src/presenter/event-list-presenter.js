@@ -33,9 +33,11 @@ export default class EventListPresenter {
   }
 
   get events() {
-    this.#filterType = this.#filterModel.filter;
+    //this.#filterType = this.#filterModel.filter;
     const events = this.#eventsModel.events;
+    events.sort(SortRules[this.#currentSortType]);
     const filteredEvents = filter[this.#filterType](events);
+    console.log(filteredEvents);
     return filteredEvents;
   }
 
@@ -71,7 +73,7 @@ export default class EventListPresenter {
         this.#renderTrip();
         break;
       case UpdateType.MAJOR:
-        this.#clearEventList();
+        this.#clearEventList(true);
         this.#renderTrip();
         break;
     }
@@ -90,7 +92,11 @@ export default class EventListPresenter {
   }
 
   #renderSort(){
-    this.#sortComponent = new SortView({sortItems: SortItems, onSortTypeChange: this.#handleSortTypeChange});
+    this.#sortComponent = new SortView({
+      sortItems: SortItems,
+      onSortTypeChange: this.#handleSortTypeChange,
+      currentSortType: this.#currentSortType,
+    });
     render(this.#sortComponent, this.#container);
   }
 
@@ -112,6 +118,9 @@ export default class EventListPresenter {
   }
 
   #renderTrip() {
+    if (!this.#sortComponent) {
+      this.#renderSort();
+    }
     if (!this.events.length) {
       this.#renderEmptyList();
       return;
@@ -127,27 +136,26 @@ export default class EventListPresenter {
       return;
     }
 
-    this.#sortEvents(sortType);
+    this.#currentSortType = sortType;
     this.#clearEventList();
     this.#renderEventList();
   };
 
-  #sortEvents(sortType) {
-    this.events.sort(SortRules[sortType]);
-    this.#currentSortType = sortType;
-  }
-
-  #clearEventList() {
+  #clearEventList(resetSortType = false) {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
     if (this.#emptyListComponent) {
       remove(this.#emptyListComponent);
     }
+    if (resetSortType) {
+      remove(this.#sortComponent);
+      this.#currentSortType = SortType.DAY;
+      console.log(this.#currentSortType);
+    }
   }
 
   init() {
-    this.#sortEvents(this.#currentSortType);
-    this.#renderSort();
+    //this.#renderSort();
     this.#renderTrip();
   }
 }

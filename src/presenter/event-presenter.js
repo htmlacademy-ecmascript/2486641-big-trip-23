@@ -55,7 +55,7 @@ export default class EventPresenter {
   #handleFormSubmit = (event) => {
     this.#handleDataChange(
       UserAction.UPDATE_EVENT,
-      UpdateType.MAJOR,
+      UpdateType.MINOR,
       event
     );
     this.#replaceFormToPoint();
