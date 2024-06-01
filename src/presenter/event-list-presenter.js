@@ -33,11 +33,10 @@ export default class EventListPresenter {
   }
 
   get events() {
-    //this.#filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const events = this.#eventsModel.events;
     events.sort(SortRules[this.#currentSortType]);
     const filteredEvents = filter[this.#filterType](events);
-    console.log(filteredEvents);
     return filteredEvents;
   }
 
@@ -118,9 +117,7 @@ export default class EventListPresenter {
   }
 
   #renderTrip() {
-    if (!this.#sortComponent) {
-      this.#renderSort();
-    }
+    this.#renderSort();
     if (!this.events.length) {
       this.#renderEmptyList();
       return;
@@ -138,24 +135,22 @@ export default class EventListPresenter {
 
     this.#currentSortType = sortType;
     this.#clearEventList();
-    this.#renderEventList();
+    this.#renderTrip();
   };
 
   #clearEventList(resetSortType = false) {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
+    remove(this.#sortComponent);
     if (this.#emptyListComponent) {
       remove(this.#emptyListComponent);
     }
     if (resetSortType) {
-      remove(this.#sortComponent);
       this.#currentSortType = SortType.DAY;
-      console.log(this.#currentSortType);
     }
   }
 
   init() {
-    //this.#renderSort();
     this.#renderTrip();
   }
 }
