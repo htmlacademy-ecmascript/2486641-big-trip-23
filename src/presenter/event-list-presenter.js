@@ -7,6 +7,7 @@ import EmptyListView from '../view/empty-list-view.js';
 import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view.js';
 import EventPresenter from './event-presenter.js';
+import NewEventPresenter from './new-event-presenter.js';
 
 export default class EventListPresenter {
   #eventListComponent = new EventListView();
@@ -20,8 +21,9 @@ export default class EventListPresenter {
   #currentSortType = SortType.DAY;
   #filterModel = null;
   #filterType = FilterType.EVERYTHING;
+  #newEventPresenter = null;
 
-  constructor({container, eventsModel, destinationsModel, offersModel, filterModel}) {
+  constructor({container, eventsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy}) {
     this.#container = container;
     this.#eventsModel = eventsModel;
     this.#destinationModel = destinationsModel;
@@ -30,6 +32,15 @@ export default class EventListPresenter {
 
     this.#eventsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+
+    this.#newEventPresenter = new NewEventPresenter({
+      eventListElement: this.#eventListComponent.element,
+      onDataChange: this.#handleViewAction,
+      onModeChange: this.#handleModeChange,
+      destinations: this.destinations,
+      offers: this.offers,
+      onDestroy: onNewEventDestroy
+    });
   }
 
   get events() {
@@ -152,5 +163,11 @@ export default class EventListPresenter {
 
   init() {
     this.#renderTrip();
+  }
+
+  createEvent() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newEventPresenter.init();
   }
 }

@@ -6,6 +6,10 @@ import { DateFormat } from '../const.js';
 import { getArrayElement } from '../utils/common.js';
 
 const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
+  let destination = null;
+  let destinationPhotos = null;
+  let destinationSection = '';
+  let offerSection = '';
   const eventTypeItems = eventTypes.map((type) => (
     `<div class="event__type-item">
     <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${event.type === type ? 'checked' : ''}>
@@ -13,12 +17,25 @@ const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
   </div>`
   )).join('');
   const offersByType = getArrayElement(offers, event.type, 'type').offers;
-  const destination = getArrayElement(destinations, event.destination);
+  if (event.destination){
+    destination = getArrayElement(destinations, event.destination);
+    destinationPhotos = destination.pictures.map((element) => `<img class="event__photo" src="${element.src}" alt="Event photo">`).join('');
+    destinationSection =
+      `<section class="event__section  event__section--destination">
+        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+        <p class="event__destination-description">${(destination) ? destination.description : ''}</p>
+        <div class="event__photos-container">
+          <div class="event__photos-tape">
+            ${destinationPhotos}
+          </div>
+        </div>
+      </section>`;
+  }
   const destinationList = destinations.map((element) => `<option value="${element.name}"></option>`).join('');
-  const destinationPhotos = destination.pictures.map((element) => `<img class="event__photo" src="${element.src}" alt="Event photo">`).join('');
   const startDate = getFormattingDate(event.dateFrom, DateFormat.FORM_DATE);
   const endDate = getFormattingDate(event.dateTo, DateFormat.FORM_DATE);
-  const offerSection = offersByType.map((element) => `<div class="event__offer-selector">
+  if (offersByType.length) {
+    const offersList = offersByType.map((element) => `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="${element.id}" type="checkbox" name="event-offer-luggage" ${event.offers.includes(element.id) ? 'checked' : ''}>
     <label class="event__offer-label" for="${element.id}">
       <span class="event__offer-title">${element.title}</span>
@@ -26,6 +43,14 @@ const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
       <span class="event__offer-price">${element.price}</span>
     </label>
   </div>`).join('');
+    offerSection =
+    `<section class="event__section  event__section--offers">
+    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+    <div class="event__available-offers">
+    ${offersList}
+  </div>
+  </section>`;
+  }
 
   return (
     `<li class="trip-events__item">
@@ -50,7 +75,9 @@ const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${event.type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination"
+            value="${(destination) ? destination.name : ''}"
+            list="destination-list-1">
             <datalist id="destination-list-1">
               ${destinationList}
             </datalist>
@@ -79,23 +106,8 @@ const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
           </button>
         </header>
         <section class="event__details">
-          <section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-            <div class="event__available-offers">
-              ${offerSection}
-            </div>
-          </section>
-
-          <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${destination.description}</p>
-              <div class="event__photos-container">
-                <div class="event__photos-tape">
-                  ${destinationPhotos}
-                </div>
-              </div>
-          </section>
+          ${offerSection}
+          ${destinationSection}
         </section>
       </form>
     </li>`
@@ -155,6 +167,10 @@ export default class EditEventView extends AbstractStatefulView {
       .addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__input--price')
+      .addEventListener('change', this.#priceChangeHandler);
+    // this.element.querySelectorAll('.event__offer-checkbox')
+    //   .forEach((element) => element.addEventListener('click', this.#offerChangeHandler));
     this.element.querySelector('.event__reset-btn')
       .addEventListener('click', this.#formDeleteClickHandler);
     this.#setStartDatepicker();
@@ -163,6 +179,9 @@ export default class EditEventView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
+    const offers = [];
+    this.element.querySelectorAll('.event__offer-checkbox').forEach((element) => (element.checked) ? offers.push(element.id) : '');
+    this._setState({offers: offers});
     this.#handleFormSubmit(EditEventView.parseStateToEvent(this._state));
   };
 
@@ -184,13 +203,23 @@ export default class EditEventView extends AbstractStatefulView {
   };
 
   #destinationChangeHandler = (evt) => {
-    const destiantion = getArrayElement(this.#destinations, evt.target.value, 'name');
-    if (destiantion) {
+    const destination = getArrayElement(this.#destinations, evt.target.value, 'name');
+    if (destination) {
       this.updateElement({
-        destination: destiantion.id
+        destination: destination.id
       });
     }
   };
+
+  #priceChangeHandler = (evt) => {
+    this.updateElement({
+      basePrice: evt.target.value
+    });
+  };
+
+  // #offerChangeHandler = (evt) => {
+  //   console.log(evt.target.id);
+  // };
 
   #startDateChangeHandler = ([userDate]) => {
     this.updateElement({
@@ -213,6 +242,7 @@ export default class EditEventView extends AbstractStatefulView {
         onChange: this.#startDateChangeHandler,
         enableTime: true,
         time24hr: true,
+        maxDate: this._state.dateTo,
       }
     );
   }
@@ -226,6 +256,7 @@ export default class EditEventView extends AbstractStatefulView {
         onChange: this.#endDateChangeHandler,
         enableTime: true,
         time24hr: true,
+        minDate: this._state.dateFrom,
       }
     );
   }
