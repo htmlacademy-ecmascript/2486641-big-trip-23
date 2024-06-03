@@ -28,11 +28,6 @@ export default class NewEventPresenter {
       return;
     }
 
-    // this.#addEventElement = new AddEventView({
-    //   offers: this.#offers,
-    //   eventTypes: this.#eventTypes,
-    //   destinations: this.#destinations,
-    // });
     this.#addEventElement = new EditEventView({
       event: this.#event,
       offers: this.#offers,

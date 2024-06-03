@@ -2,7 +2,6 @@ import { FilterType, SortItems, SortType, UpdateType, UserAction } from '../cons
 import { remove, render } from '../framework/render.js';
 import { SortRules } from '../utils/event.js';
 import { filter } from '../utils/filter.js';
-import AddEventView from '../view/add-event-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view.js';
@@ -95,10 +94,6 @@ export default class EventListPresenter {
 
   #renderEventList(){
     this.events.forEach((event) => this.#renderEvent(event));
-  }
-
-  #renderAddEvent(){
-    render(new AddEventView(), this.#eventListComponent.element);
   }
 
   #renderSort(){
