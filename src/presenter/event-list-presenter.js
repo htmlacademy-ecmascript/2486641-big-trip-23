@@ -132,7 +132,10 @@ export default class EventListPresenter {
     this.#renderEventList();
   }
 
-  #handleModeChange = () => this.#eventPresenters.forEach((presenter) => presenter.resetView());
+  #handleModeChange = () => {
+    this.#newEventPresenter.destroy();
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
+  };
 
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {

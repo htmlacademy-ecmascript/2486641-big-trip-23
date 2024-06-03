@@ -20,7 +20,7 @@ export default class NewEventPresenter {
     this.#handleDestroy = onDestroy;
     this.#destinations = destinations;
     this.#offers = offers;
-    this.#event = {...this.#event, type: 'flight', basePrice: '0', offers: ''};
+    this.#event = {...this.#event, type: 'flight', basePrice: '0', offers: []};
   }
 
   init() {
@@ -34,6 +34,8 @@ export default class NewEventPresenter {
       eventTypes: this.#eventTypes,
       destinations: this.#destinations,
       onFormSubmit: this.#handleFormSubmit,
+      onDeleteClick: this.#handleDeleteClick,
+      onFormClose: this.#handleDeleteClick,
     });
 
     render(this.#addEventElement, this.#eventListElement, RenderPosition.AFTERBEGIN);
