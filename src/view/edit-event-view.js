@@ -169,8 +169,10 @@ export default class EditEventView extends AbstractStatefulView {
       .addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__input--price')
       .addEventListener('change', this.#priceChangeHandler);
-    // this.element.querySelectorAll('.event__offer-checkbox')
-    //   .forEach((element) => element.addEventListener('click', this.#offerChangeHandler));
+    if (this.element.querySelector('.event__available-offers')) {
+      this.element.querySelector('.event__available-offers').
+        addEventListener('change', this.#offerChangeHandler);
+    }
     this.element.querySelector('.event__reset-btn')
       .addEventListener('click', this.#formDeleteClickHandler);
     this.#setStartDatepicker();
@@ -179,9 +181,6 @@ export default class EditEventView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    const offers = [];
-    this.element.querySelectorAll('.event__offer-checkbox').forEach((element) => (element.checked) ? offers.push(element.id) : '');
-    this._setState({offers: offers});
     this.#handleFormSubmit(EditEventView.parseStateToEvent(this._state));
   };
 
@@ -212,14 +211,17 @@ export default class EditEventView extends AbstractStatefulView {
   };
 
   #priceChangeHandler = (evt) => {
-    this.updateElement({
+    this._setState({
       basePrice: evt.target.value
     });
   };
 
-  // #offerChangeHandler = (evt) => {
-  //   console.log(evt.target.id);
-  // };
+  #offerChangeHandler = (evt) => {
+    evt.preventDefault();
+    const offers = [];
+    this.element.querySelectorAll('.event__offer-checkbox').forEach((element) => (element.checked) ? offers.push(element.id) : '');
+    this._setState({offers: offers});
+  };
 
   #startDateChangeHandler = ([userDate]) => {
     this.updateElement({
