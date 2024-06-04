@@ -29,6 +29,7 @@ const DateFormat = {
   FULL_DATETIME: 'YYYY-MM-DDTHH:mm',
   FORM_DATE: 'DD/MM/YY HH:mm',
   DATEPICKER: 'd/m/y H:i',
+  TRIP_INFO: 'D MMM',
 };
 
 const UserAction = {
