@@ -9,6 +9,7 @@ export default class TripInfoPresenter {
   #destinationsModel = null;
   #infoContainer = null;
   #tripInfoComponent = null;
+
   constructor({eventsModel, offersModel, destinationsModel, infoContainer}) {
     this.#eventsModel = eventsModel;
     this.#offersModel = offersModel;
@@ -27,9 +28,7 @@ export default class TripInfoPresenter {
   }
 
   get offers() {
-    const offers = [];
-    this.#offersModel.offers.forEach((item) => offers.push(...item.offers));
-    return offers;
+    return this.#offersModel.offers.flatMap((item) => item.offers);
   }
 
   get destinations() {
@@ -51,11 +50,5 @@ export default class TripInfoPresenter {
 
     replace(this.#tripInfoComponent, prevTripInfoComponent);
     remove(prevTripInfoComponent);
-
-
-    // this.#tripInfoComponent = new TripInfoView({
-    //   events: this.events
-    // });
-    // render(this.#tripInfoComponent, this.#infoContainer, RenderPosition.AFTERBEGIN);
   }
 }

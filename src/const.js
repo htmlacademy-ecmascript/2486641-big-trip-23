@@ -51,4 +51,12 @@ const NoTasksTextType = {
   [FilterType.FUTURE]: 'There are no future events now',
 };
 
-export {EVENT_TYPES, SortItems, FilterType, SortType, DateFormat, UserAction, UpdateType, NoTasksTextType};
+const NewEvent = {
+  type: 'flight',
+  basePrice: '0',
+  offers: [],
+};
+
+const INFO_CITIES_COUNT = 3;
+
+export {EVENT_TYPES, SortItems, FilterType, SortType, DateFormat, UserAction, UpdateType, NoTasksTextType, NewEvent, INFO_CITIES_COUNT};

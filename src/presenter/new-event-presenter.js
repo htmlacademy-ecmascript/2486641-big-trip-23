@@ -1,6 +1,6 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
 import {nanoid} from 'nanoid';
-import {UserAction, UpdateType, EVENT_TYPES} from '../const.js';
+import {UserAction, UpdateType, EVENT_TYPES, NewEvent} from '../const.js';
 import EditEventView from '../view/edit-event-view.js';
 
 export default class NewEventPresenter {
@@ -10,7 +10,7 @@ export default class NewEventPresenter {
   #destinations = null;
   #offers = null;
   #eventTypes = EVENT_TYPES;
-  #event = {};
+  #event = NewEvent;
 
   #addEventElement = null;
 
@@ -20,7 +20,6 @@ export default class NewEventPresenter {
     this.#handleDestroy = onDestroy;
     this.#destinations = destinations;
     this.#offers = offers;
-    this.#event = {...this.#event, type: 'flight', basePrice: '0', offers: []};
   }
 
   init() {
@@ -44,7 +43,7 @@ export default class NewEventPresenter {
   }
 
   destroy() {
-    if (this.#addEventElement === null) {
+    if (!this.#addEventElement) {
       return;
     }
 
@@ -70,7 +69,7 @@ export default class NewEventPresenter {
   };
 
   #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (evt.key === 'Escape') {
       evt.preventDefault();
       this.destroy();
     }

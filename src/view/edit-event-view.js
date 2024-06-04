@@ -218,8 +218,7 @@ export default class EditEventView extends AbstractStatefulView {
 
   #offerChangeHandler = (evt) => {
     evt.preventDefault();
-    const offers = [];
-    this.element.querySelectorAll('.event__offer-checkbox').forEach((element) => (element.checked) ? offers.push(element.id) : '');
+    const offers = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'), (offer) => offer.id);
     this._setState({offers: offers});
   };
 

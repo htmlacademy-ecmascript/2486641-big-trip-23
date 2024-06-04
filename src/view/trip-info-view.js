@@ -1,4 +1,4 @@
-import { DateFormat } from '../const';
+import { DateFormat, INFO_CITIES_COUNT } from '../const';
 import AbstractView from '../framework/view/abstract-view';
 import { getArrayElement } from '../utils/common';
 import { getFormattingDate } from '../utils/event';
@@ -7,9 +7,9 @@ const getTripDestinations = ({events, destinations}) => {
   const firstCity = getArrayElement(destinations, events[0].destination).name;
   const lastCity = getArrayElement(destinations, events[events.length - 1].destination).name;
   let middleCity = '';
-  if (events.length === 3) {
+  if (events.length === INFO_CITIES_COUNT) {
     middleCity = `${getArrayElement(destinations, events[1].destination).name} &mdash; `;
-  } else if (events.length > 3) {
+  } else if (events.length > INFO_CITIES_COUNT) {
     middleCity = '... &mdash; ';
   }
   return `${firstCity}  &mdash; ${middleCity}${lastCity}`;
