@@ -1,3 +1,4 @@
+import EventsApiService from './events-api-service.js';
 import { render } from './framework/render.js';
 import DestinationsModel from './model/destinations-model.js';
 import EventsModel from './model/events-model.js';
@@ -8,10 +9,15 @@ import FilterPresenter from './presenter/filter-presenter.js';
 import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import NewEventButtonView from './view/new-event-button-view.js';
 
+const AUTHORIZATION = 'Basic 7950hS1sa2j4049';
+const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
+
 const controlFiltersElement = document.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');
 const tripMainElement = document.querySelector('.trip-main');
-const eventsModel = new EventsModel();
+const eventsModel = new EventsModel({
+  eventsApiService: new EventsApiService(END_POINT, AUTHORIZATION)
+});
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 const filterModel = new FilterModel();
@@ -46,7 +52,9 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
-render(newEventButtonComponent, tripMainElement);
-tripInfoPresenter.init();
-filterPresenter.init();
+//tripInfoPresenter.init();
+//filterPresenter.init();
 eventListPresenter.init();
+eventsModel.init().finally(() => {
+  render(newEventButtonComponent, tripMainElement);
+});
