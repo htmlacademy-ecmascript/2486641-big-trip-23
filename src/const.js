@@ -29,6 +29,34 @@ const DateFormat = {
   FULL_DATETIME: 'YYYY-MM-DDTHH:mm',
   FORM_DATE: 'DD/MM/YY HH:mm',
   DATEPICKER: 'd/m/y H:i',
+  TRIP_INFO: 'D MMM',
 };
 
-export {EVENT_TYPES, SortItems, FilterType, SortType, DateFormat};
+const UserAction = {
+  UPDATE_EVENT: 'UPDATE_EVENT',
+  ADD_EVENT: 'ADD_EVENT',
+  DELETE_EVENT: 'DELETE_EVENT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const NoTasksTextType = {
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.PAST]: 'There are no past events now',
+  [FilterType.PRESENT]: 'There are no present events now',
+  [FilterType.FUTURE]: 'There are no future events now',
+};
+
+const NewEvent = {
+  type: 'flight',
+  basePrice: '0',
+  offers: [],
+};
+
+const INFO_CITIES_COUNT = 3;
+
+export {EVENT_TYPES, SortItems, FilterType, SortType, DateFormat, UserAction, UpdateType, NoTasksTextType, NewEvent, INFO_CITIES_COUNT};

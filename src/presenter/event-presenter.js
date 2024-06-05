@@ -1,5 +1,6 @@
-import { EVENT_TYPES } from '../const';
+import { EVENT_TYPES, UpdateType, UserAction } from '../const';
 import { remove, render, replace } from '../framework/render';
+import { getArrayElement } from '../utils/common';
 import EditEventView from '../view/edit-event-view';
 import EventView from '../view/event-view';
 
@@ -12,7 +13,6 @@ export default class EventPresenter {
   #eventElement = null;
   #editEventElement = null;
   #eventListElement = null;
-  #eventsModel = null;
 
   #handleDataChange = null;
   #handleModeChange = null;
@@ -25,11 +25,12 @@ export default class EventPresenter {
   #eventTypes = EVENT_TYPES;
   #mode = Mode.DEFAULT;
 
-  constructor({eventListElement, onDataChange, eventsModel, onModeChange}) {
+  constructor({eventListElement, onDataChange, onModeChange, destinations, offers}) {
     this.#eventListElement = eventListElement;
     this.#handleDataChange = onDataChange;
-    this.#eventsModel = eventsModel;
     this.#handleModeChange = onModeChange;
+    this.#destinations = destinations;
+    this.#offers = offers;
   }
 
   #escKeyDownHandler = (evt) => {
@@ -51,7 +52,12 @@ export default class EventPresenter {
     this.#mode = Mode.DEFAULT;
   }
 
-  #handleFormSubmit = () => {
+  #handleFormSubmit = (event) => {
+    this.#handleDataChange(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
+      event
+    );
     this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
@@ -67,15 +73,26 @@ export default class EventPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#event, isFavorite: !this.#event.isFavorite});
+    this.#handleDataChange(
+      UserAction.UPDATE_EVENT,
+      UpdateType.PATCH,
+      {...this.#event, isFavorite: !this.#event.isFavorite}
+    );
   };
 
-  init({event}) {
+  #handleDeleteClick = (event) => {
+    this.#handleDataChange(
+      UserAction.DELETE_EVENT,
+      UpdateType.MINOR,
+      event,
+    );
+  };
+
+  init(event) {
     this.#event = event;
-    this.#destination = this.#eventsModel.getDestination(event.destination);
-    this.#offersInfo = event.offers.map((element) => this.#eventsModel.getOffer(event.type, element));
-    this.#destinations = this.#eventsModel.destinations;
-    this.#offers = this.#eventsModel.getOffers();
+    this.#destination = getArrayElement(this.#destinations, this.#event.destination);
+    const offersByType = getArrayElement(this.#offers, this.#event.type, 'type').offers;
+    this.#offersInfo = this.#event.offers.map((element) => getArrayElement(offersByType, element));
 
     const prevEventElement = this.#eventElement;
     const prevEditEventElement = this.#editEventElement;
@@ -93,7 +110,8 @@ export default class EventPresenter {
       eventTypes: this.#eventTypes,
       destinations: this.#destinations,
       onFormSubmit: this.#handleFormSubmit,
-      onFormClose: this.#handleFormClose
+      onFormClose: this.#handleFormClose,
+      onDeleteClick: this.#handleDeleteClick,
     });
 
     if (prevEventElement === null || prevEditEventElement === null) {
