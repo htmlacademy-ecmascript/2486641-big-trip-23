@@ -10,7 +10,7 @@ const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
   let destinationPhotos = null;
   let destinationSection = '';
   let offerSection = '';
-  const eventTypeItems = eventTypes.map((type) => (
+  const eventTypeItems = Object.values(eventTypes).map((type) => (
     `<div class="event__type-item">
     <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${event.type === type ? 'checked' : ''}>
     <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type[0].toUpperCase() + type.slice(1)}</label>
@@ -222,17 +222,9 @@ export default class EditEventView extends AbstractStatefulView {
     this._setState({offers: offers});
   };
 
-  #startDateChangeHandler = ([userDate]) => {
-    this.updateElement({
-      dateFrom: userDate,
-    });
-  };
+  #startDateChangeHandler = ([dateFrom]) => this.updateElement({dateFrom});
 
-  #endDateChangeHandler = ([userDate]) => {
-    this.updateElement({
-      dateTo: userDate,
-    });
-  };
+  #endDateChangeHandler = ([dateTo]) => this.updateElement({dateTo});
 
   #setStartDatepicker() {
     this.#startDatepicker = flatpickr(
@@ -242,7 +234,7 @@ export default class EditEventView extends AbstractStatefulView {
         dateFormat: DateFormat.DATEPICKER,
         onChange: this.#startDateChangeHandler,
         enableTime: true,
-        time24hr: true,
+        ['time_24hr']: true,
         maxDate: this._state.dateTo,
       }
     );
@@ -256,7 +248,7 @@ export default class EditEventView extends AbstractStatefulView {
         dateFormat: DateFormat.DATEPICKER,
         onChange: this.#endDateChangeHandler,
         enableTime: true,
-        time24hr: true,
+        ['time_24hr']: true,
         minDate: this._state.dateFrom,
       }
     );

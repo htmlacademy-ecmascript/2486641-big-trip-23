@@ -1,4 +1,4 @@
-import { EVENT_TYPES, UpdateType, UserAction } from '../const';
+import { EventTypes, UpdateType, UserAction } from '../const';
 import { remove, render, replace } from '../framework/render';
 import { getArrayElement } from '../utils/common';
 import EditEventView from '../view/edit-event-view';
@@ -22,7 +22,7 @@ export default class EventPresenter {
   #offersInfo = null;
   #destinations = null;
   #offers = null;
-  #eventTypes = EVENT_TYPES;
+  #eventTypes = EventTypes;
   #mode = Mode.DEFAULT;
 
   constructor({eventListElement, onDataChange, onModeChange, destinations, offers}) {
