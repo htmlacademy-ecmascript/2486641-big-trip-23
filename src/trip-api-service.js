@@ -5,9 +5,19 @@ const Method = {
   PUT: 'PUT',
 };
 
-export default class EventsApiService extends ApiService {
+export default class TripApiService extends ApiService {
   get events() {
     return this._load({url: 'points'})
+      .then(ApiService.parseResponse);
+  }
+
+  get offers() {
+    return this._load({url: 'offers'})
+      .then(ApiService.parseResponse);
+  }
+
+  get destinations() {
+    return this._load({url: 'destinations'})
       .then(ApiService.parseResponse);
   }
 
@@ -26,7 +36,7 @@ export default class EventsApiService extends ApiService {
 
   #adaptToServer(event) {
     const adaptedEvent = {...event,
-      'base_price': event.basePrice,
+      'base_price': Number(event.basePrice),
       'date_from': event.dateFrom instanceof Date ? event.dateFrom.toISOString() : null,
       'date_to': event.dateTo instanceof Date ? event.dateTo.toISOString() : null,
       'is_favorite': event.isFavorite,

@@ -21,7 +21,7 @@ export default class EventListPresenter {
   #filterModel = null;
   #filterType = FilterType.EVERYTHING;
   #newEventPresenter = null;
-  #isLoading = true;
+  //#isLoading = true;
 
   constructor({container, eventsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy}) {
     this.#container = container;
@@ -46,7 +46,6 @@ export default class EventListPresenter {
   get events() {
     this.#filterType = this.#filterModel.filter;
     const events = this.#eventsModel.events;
-    console.log(events);
     events.sort(SortRules[this.#currentSortType]);
     const filteredEvents = filter[this.#filterType](events);
     return filteredEvents;
@@ -87,11 +86,6 @@ export default class EventListPresenter {
         this.#clearEventList(true);
         this.#renderTrip();
         break;
-      case UpdateType.INIT:
-        this.#isLoading = false;
-        //remove(this.#loadingComponent);
-        this.#renderTrip();
-        break;
     }
   };
 
@@ -130,11 +124,6 @@ export default class EventListPresenter {
   }
 
   #renderTrip() {
-    if (this.#isLoading) {
-      //this.#renderLoading();
-      return;
-    }
-
     this.#renderSort();
     if (!this.events.length) {
       this.#renderEmptyList();
