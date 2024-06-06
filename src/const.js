@@ -1,4 +1,16 @@
-const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+const INFO_CITIES_COUNT = 3;
+
+const EventTypes = {
+  TAXI: 'taxi',
+  BUS: 'bus',
+  TRAIN: 'train',
+  SHIP: 'ship',
+  DRIVE: 'drive',
+  FLIGHT: 'flight',
+  CHECK_IN: 'check-in',
+  SIGHTSEEING: 'sightseeing',
+  RESTAURANT: 'restaurant',
+};
 
 const FilterType = {
   EVERYTHING: 'everything',
@@ -42,6 +54,7 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const NoTasksTextType = {
@@ -52,11 +65,9 @@ const NoTasksTextType = {
 };
 
 const NewEvent = {
-  type: 'flight',
+  type: EventTypes.FLIGHT,
   basePrice: '0',
   offers: [],
 };
 
-const INFO_CITIES_COUNT = 3;
-
-export {EVENT_TYPES, SortItems, FilterType, SortType, DateFormat, UserAction, UpdateType, NoTasksTextType, NewEvent, INFO_CITIES_COUNT};
+export {EventTypes, SortItems, FilterType, SortType, DateFormat, UserAction, UpdateType, NoTasksTextType, NewEvent, INFO_CITIES_COUNT};

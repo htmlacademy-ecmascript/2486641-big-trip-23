@@ -1,6 +1,6 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
 import {nanoid} from 'nanoid';
-import {UserAction, UpdateType, EVENT_TYPES, NewEvent} from '../const.js';
+import {UserAction, UpdateType, EventTypes, NewEvent} from '../const.js';
 import EditEventView from '../view/edit-event-view.js';
 
 export default class NewEventPresenter {
@@ -9,7 +9,7 @@ export default class NewEventPresenter {
   #handleDestroy = null;
   #destinations = null;
   #offers = null;
-  #eventTypes = EVENT_TYPES;
+  #eventTypes = EventTypes;
   #event = NewEvent;
 
   #addEventElement = null;
