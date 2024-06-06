@@ -1,5 +1,4 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
-import {nanoid} from 'nanoid';
 import {UserAction, UpdateType, EventTypes, NewEvent} from '../const.js';
 import EditEventView from '../view/edit-event-view.js';
 
@@ -59,7 +58,7 @@ export default class NewEventPresenter {
     this.#handleDataChange(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
-      {id: nanoid(), ...event},
+      event,
     );
     this.destroy();
   };
