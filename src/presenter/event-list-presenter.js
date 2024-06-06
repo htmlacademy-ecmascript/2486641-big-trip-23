@@ -21,7 +21,7 @@ export default class EventListPresenter {
   #filterModel = null;
   #filterType = FilterType.EVERYTHING;
   #newEventPresenter = null;
-  //#isLoading = true;
+  #onNewEventDestroy = null;
 
   constructor({container, eventsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy}) {
     this.#container = container;
@@ -29,18 +29,10 @@ export default class EventListPresenter {
     this.#destinationModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#filterModel = filterModel;
+    this.#onNewEventDestroy = onNewEventDestroy;
 
     this.#eventsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-
-    this.#newEventPresenter = new NewEventPresenter({
-      eventListElement: this.#eventListComponent.element,
-      onDataChange: this.#handleViewAction,
-      onModeChange: this.#handleModeChange,
-      destinations: this.destinations,
-      offers: this.offers,
-      onDestroy: onNewEventDestroy
-    });
   }
 
   get events() {
@@ -167,6 +159,15 @@ export default class EventListPresenter {
   createEvent() {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+
+    this.#newEventPresenter = new NewEventPresenter({
+      eventListElement: this.#eventListComponent.element,
+      onDataChange: this.#handleViewAction,
+      onModeChange: this.#handleModeChange,
+      destinations: this.destinations,
+      offers: this.offers,
+      onDestroy: this.#onNewEventDestroy,
+    });
     this.#newEventPresenter.init();
   }
 }

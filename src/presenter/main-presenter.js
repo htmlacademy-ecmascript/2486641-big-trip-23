@@ -16,7 +16,7 @@ export default class MainPresenter {
   #offersModel = null;
   #filterModel = null;
 
-  _newEventButtonComponent = null;
+  #newEventButtonComponent = null;
   #newEventButtonContainer = null;
   #loadingComponent = new LoadingView();
   #eventListContainer = null;
@@ -59,7 +59,7 @@ export default class MainPresenter {
       offersModel: this.#offersModel,
       infoContainer: tripMainContainer
     });
-    this._newEventButtonComponent = new NewEventButtonView({
+    this.#newEventButtonComponent = new NewEventButtonView({
       onClick: this.#handleNewEventButtonClick,
     });
 
@@ -76,34 +76,32 @@ export default class MainPresenter {
       case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
-        this._newEventButtonComponent.element.disabled = false;
+        this.#newEventButtonComponent.element.disabled = false;
         this.#renderPage();
         break;
     }
   };
 
-  #handleNewEventButtonClick() {
-    //console.log(this.#eventListPresenter);
-    //this.#eventListPresenter.createEvent();
-    console.log(this._newEventButtonComponent);
-    this._newEventButtonComponent.element.disabled = true;
-  }
+  #handleNewEventButtonClick = () => {
+    this.#newEventButtonComponent.element.disabled = true;
+    this.#eventListPresenter.createEvent();
+  };
 
-  #handleNewEventFormClose() {
-    this._newEventButtonComponent.element.disabled = false;
-  }
+  #handleNewEventFormClose = () => {
+    this.#newEventButtonComponent.element.disabled = false;
+  };
 
   #renderLoading() {
     render(this.#loadingComponent, this.#eventListContainer);
   }
 
   #renderNewEventButton(){
-    render(this._newEventButtonComponent, this.#newEventButtonContainer);
+    render(this.#newEventButtonComponent, this.#newEventButtonContainer);
   }
 
   async init() {
     this.#filterPresenter.init();
-    this._newEventButtonComponent.element.disabled = true;
+    this.#newEventButtonComponent.element.disabled = true;
     this.#renderNewEventButton();
 
     if (this.#isLoading) {
