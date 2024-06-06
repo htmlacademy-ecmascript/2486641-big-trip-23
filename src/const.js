@@ -84,4 +84,9 @@ const Url = {
   DESTINATIONS: 'destinations',
 };
 
-export {EventTypes, SortItems, FilterType, SortType, DateFormat, UserAction, UpdateType, NoTasksTextType, NewEvent, INFO_CITIES_COUNT, Method, Url};
+const TimeLimit = {
+  LOWER_LIMIT: 0,
+  UPPER_LIMIT: 1000,
+};
+
+export {EventTypes, SortItems, FilterType, SortType, DateFormat, UserAction, UpdateType, NoTasksTextType, NewEvent, INFO_CITIES_COUNT, Method, Url, TimeLimit};

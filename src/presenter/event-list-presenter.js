@@ -1,4 +1,4 @@
-import { FilterType, SortItems, SortType, UpdateType, UserAction } from '../const.js';
+import { FilterType, SortItems, SortType, TimeLimit, UpdateType, UserAction } from '../const.js';
 import { remove, render } from '../framework/render.js';
 import { SortRules } from '../utils/event.js';
 import { filter } from '../utils/filter.js';
@@ -7,6 +7,7 @@ import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view.js';
 import EventPresenter from './event-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 export default class EventListPresenter {
   #eventListComponent = new EventListView();
@@ -22,6 +23,10 @@ export default class EventListPresenter {
   #filterType = FilterType.EVERYTHING;
   #newEventPresenter = null;
   #onNewEventDestroy = null;
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor({container, eventsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy}) {
     this.#container = container;
@@ -51,7 +56,8 @@ export default class EventListPresenter {
     return this.#offersModel.offers;
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
         this.#eventsModel.updateEvent(updateType, update);
@@ -63,6 +69,7 @@ export default class EventListPresenter {
         this.#eventsModel.deleteEvent(updateType, update);
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
