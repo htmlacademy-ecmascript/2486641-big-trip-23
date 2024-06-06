@@ -1,5 +1,6 @@
 import { UpdateType } from '../const';
-import { render } from '../framework/render.js';
+import { remove, render } from '../framework/render.js';
+import LoadingView from '../view/loading-view.js';
 import NewEventButtonView from '../view/new-event-button-view.js';
 import EventListPresenter from './event-list-presenter.js';
 import FilterPresenter from './filter-presenter';
@@ -17,6 +18,8 @@ export default class MainPresenter {
 
   _newEventButtonComponent = null;
   #newEventButtonContainer = null;
+  #loadingComponent = new LoadingView();
+  #eventListContainer = null;
 
   #isLoading = true;
 
@@ -35,6 +38,7 @@ export default class MainPresenter {
     this.#offersModel = offersModel;
     this.#filterModel = filterModel;
     this.#newEventButtonContainer = newEventButtonContainer;
+    this.#eventListContainer = eventListContainer;
 
     this.#eventListPresenter = new EventListPresenter({
       container: eventListContainer,
@@ -64,7 +68,6 @@ export default class MainPresenter {
 
   #renderPage() {
     this.#tripInfoPresenter.init();
-    this.#filterPresenter.init();
     this.#eventListPresenter.init();
   }
 
@@ -72,7 +75,8 @@ export default class MainPresenter {
     switch (updateType) {
       case UpdateType.INIT:
         this.#isLoading = false;
-        //remove(this.#loadingComponent);
+        remove(this.#loadingComponent);
+        this._newEventButtonComponent.element.disabled = false;
         this.#renderPage();
         break;
     }
@@ -89,14 +93,24 @@ export default class MainPresenter {
     this._newEventButtonComponent.element.disabled = false;
   }
 
+  #renderLoading() {
+    render(this.#loadingComponent, this.#eventListContainer);
+  }
+
+  #renderNewEventButton(){
+    render(this._newEventButtonComponent, this.#newEventButtonContainer);
+  }
+
   async init() {
+    this.#filterPresenter.init();
+    this._newEventButtonComponent.element.disabled = true;
+    this.#renderNewEventButton();
+
     if (this.#isLoading) {
+      this.#renderLoading();
       return;
     }
     this.#renderPage();
   }
 
-  newEventButtonRender(){
-    render(this._newEventButtonComponent, this.#newEventButtonContainer);
-  }
 }

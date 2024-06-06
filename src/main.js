@@ -37,9 +37,5 @@ const mainPresenter = new MainPresenter({
 mainPresenter.init();
 
 offersModel.init().finally(() => {
-  destinationsModel.init().finally(() => {
-    eventsModel.init().finally(() => {
-      mainPresenter.newEventButtonRender();
-    });
-  });
+  destinationsModel.init().finally(() => eventsModel.init());
 });
