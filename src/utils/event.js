@@ -10,9 +10,9 @@ const getFormattingDate = (date, format) => {
 };
 
 const getDuration = (dateFrom, dateTo) => {
-  const minutes = dayjs(dateTo).diff(dayjs(dateFrom), 'minutes') % 60;
-  const hours = dayjs(dateTo).diff(dayjs(dateFrom), 'hours') % 24;
-  const days = dayjs(dateTo).diff(dayjs(dateFrom), 'days');
+  const minutes = String(dayjs(dateTo).diff(dayjs(dateFrom), 'minutes') % 60).padStart(2, '0');
+  const hours = String(dayjs(dateTo).diff(dayjs(dateFrom), 'hours') % 24).padStart(2, '0');
+  const days = String(dayjs(dateTo).diff(dayjs(dateFrom), 'days')).padStart(2, '0');
   if (days === 0 && hours === 0){
     return `${minutes}M`;
   } else if (days === 0) {
