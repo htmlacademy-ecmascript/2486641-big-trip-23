@@ -33,6 +33,98 @@ export default class EventPresenter {
     this.#offers = offers;
   }
 
+  init(event) {
+    this.#event = event;
+    this.#destination = getArrayElement(this.#destinations, this.#event.destination);
+    const offersByType = getArrayElement(this.#offers, this.#event.type, 'type').offers;
+    this.#offersInfo = this.#event.offers.map((element) => getArrayElement(offersByType, element));
+
+    const prevEventElement = this.#eventElement;
+    const prevEditEventElement = this.#editEventElement;
+    this.#eventElement = new EventView({
+      event: this.#event,
+      destination: this.#destination,
+      offersInfo: this.#offersInfo,
+      onEditClick: this.#handleFormEdit,
+      onFavoriteClick: this.#handleFavoriteClick
+    });
+
+    this.#editEventElement = new EditEventView({
+      event: this.#event,
+      offers: this.#offers,
+      eventTypes: this.#eventTypes,
+      destinations: this.#destinations,
+      onFormSubmit: this.#handleFormSubmit,
+      onFormClose: this.#handleFormClose,
+      onDeleteClick: this.#handleDeleteClick,
+    });
+
+    if (prevEventElement === null || prevEditEventElement === null) {
+      render(this.#eventElement, this.#eventListElement);
+      return;
+    }
+
+    if (this.#mode === Mode.DEFAULT) {
+      replace(this.#eventElement, prevEventElement);
+    }
+
+    if (this.#mode === Mode.EDITING) {
+      //replace(this.#editEventElement, prevEditEventElement);
+      replace(this.#eventElement, prevEditEventElement);
+      this.#mode = Mode.DEFAULT;
+    }
+
+    remove(prevEventElement);
+    remove(prevEditEventElement);
+  }
+
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editEventElement.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editEventElement.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#eventElement.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#editEventElement.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editEventElement.shake(resetFormState);
+  }
+
+  destroy() {
+    remove(this.#eventElement);
+    remove(this.#editEventElement);
+  }
+
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToPoint();
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
+    }
+  }
+
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
@@ -88,58 +180,4 @@ export default class EventPresenter {
     );
   };
 
-  init(event) {
-    this.#event = event;
-    this.#destination = getArrayElement(this.#destinations, this.#event.destination);
-    const offersByType = getArrayElement(this.#offers, this.#event.type, 'type').offers;
-    this.#offersInfo = this.#event.offers.map((element) => getArrayElement(offersByType, element));
-
-    const prevEventElement = this.#eventElement;
-    const prevEditEventElement = this.#editEventElement;
-    this.#eventElement = new EventView({
-      event: this.#event,
-      destination: this.#destination,
-      offersInfo: this.#offersInfo,
-      onEditClick: this.#handleFormEdit,
-      onFavoriteClick: this.#handleFavoriteClick
-    });
-
-    this.#editEventElement = new EditEventView({
-      event: this.#event,
-      offers: this.#offers,
-      eventTypes: this.#eventTypes,
-      destinations: this.#destinations,
-      onFormSubmit: this.#handleFormSubmit,
-      onFormClose: this.#handleFormClose,
-      onDeleteClick: this.#handleDeleteClick,
-    });
-
-    if (prevEventElement === null || prevEditEventElement === null) {
-      render(this.#eventElement, this.#eventListElement);
-      return;
-    }
-
-    if (this.#mode === Mode.DEFAULT) {
-      replace(this.#eventElement, prevEventElement);
-    }
-
-    if (this.#mode === Mode.EDITING) {
-      replace(this.#editEventElement, prevEditEventElement);
-    }
-
-    remove(prevEventElement);
-    remove(prevEditEventElement);
-  }
-
-  destroy() {
-    remove(this.#eventElement);
-    remove(this.#editEventElement);
-  }
-
-  resetView() {
-    if (this.#mode !== Mode.DEFAULT) {
-      this.#replaceFormToPoint();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    }
-  }
 }
