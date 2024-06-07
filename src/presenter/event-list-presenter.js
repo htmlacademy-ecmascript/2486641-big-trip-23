@@ -1,5 +1,5 @@
 import { FilterType, SortItems, SortType, TimeLimit, UpdateType, UserAction } from '../const.js';
-import { remove, render } from '../framework/render.js';
+import { RenderPosition, remove, render } from '../framework/render.js';
 import { SortRules } from '../utils/event.js';
 import { filter } from '../utils/filter.js';
 import EmptyListView from '../view/empty-list-view.js';
@@ -119,7 +119,7 @@ export default class EventListPresenter {
       onSortTypeChange: this.#handleSortTypeChange,
       currentSortType: this.#currentSortType,
     });
-    render(this.#sortComponent, this.#container);
+    render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
   }
 
   #renderEmptyList(){
@@ -140,12 +140,12 @@ export default class EventListPresenter {
   }
 
   #renderTrip() {
-    this.#renderSort();
+    this.#renderEventContainer();
     if (!this.events.length) {
       this.#renderEmptyList();
       return;
     }
-    this.#renderEventContainer();
+    this.#renderSort();
     this.#renderEventList();
   }
 
@@ -185,6 +185,9 @@ export default class EventListPresenter {
   createEvent() {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    // if (this.#emptyListComponent) {
+    //   remove(this.#emptyListComponent);
+    // }
 
     this.#newEventPresenter = new NewEventPresenter({
       eventListElement: this.#eventListComponent.element,

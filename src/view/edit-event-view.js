@@ -31,16 +31,18 @@ const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
   if (event.destination){
     destination = getArrayElement(destinations, event.destination);
     destinationPhotos = destination.pictures.map((element) => `<img class="event__photo" src="${element.src}" alt="Event photo">`).join('');
-    destinationSection =
-      `<section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${(destination) ? destination.description : ''}</p>
-        <div class="event__photos-container">
-          <div class="event__photos-tape">
-            ${destinationPhotos}
-          </div>
-        </div>
-      </section>`;
+    if ((destination.description) || (destinationPhotos)) {
+      destinationSection =
+        `<section class="event__section  event__section--destination">
+          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+          ${(destination.description) ? `<p class="event__destination-description">${destination.description}</p>` : ''}
+          ${(destinationPhotos) ? `<div class="event__photos-container">
+            <div class="event__photos-tape">
+              ${destinationPhotos}
+            </div>
+          </div>` : ''}
+        </section>`;
+    }
   }
   const destinationList = destinations.map((element) => `<option value="${element.name}"></option>`).join('');
   const startDate = getFormattingDate(event.dateFrom, DateFormat.FORM_DATE);
@@ -141,7 +143,10 @@ const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
-          <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
+          ${(event.id)
+      ? `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>`
+      : '<button class="event__reset-btn" type="reset">Cancel</button>'
+    }
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
           </button>
@@ -185,6 +190,10 @@ export default class EditEventView extends AbstractStatefulView {
       destinations: this.#destinations,
       offers: this.#offers
     });
+  }
+
+  reset(event) {
+    this.updateElement(EditEventView.parseEventToState(event));
   }
 
   removeElement() {
@@ -274,7 +283,7 @@ export default class EditEventView extends AbstractStatefulView {
       {
         defaultDate: this._state.dateFrom,
         dateFormat: DateFormat.DATEPICKER,
-        onChange: this.#startDateChangeHandler,
+        onClose: this.#startDateChangeHandler,
         enableTime: true,
         ['time_24hr']: true,
         maxDate: this._state.dateTo,
@@ -288,7 +297,7 @@ export default class EditEventView extends AbstractStatefulView {
       {
         defaultDate: this._state.dateTo,
         dateFormat: DateFormat.DATEPICKER,
-        onChange: this.#endDateChangeHandler,
+        onClose: this.#endDateChangeHandler,
         enableTime: true,
         ['time_24hr']: true,
         minDate: this._state.dateFrom,

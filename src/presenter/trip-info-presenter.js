@@ -36,6 +36,12 @@ export default class TripInfoPresenter {
   }
 
   init() {
+    if (!this.events.length) {
+      if (this.#tripInfoComponent) {
+        remove(this.#tripInfoComponent);
+      }
+      return;
+    }
     const prevTripInfoComponent = this.#tripInfoComponent;
 
     this.#tripInfoComponent = new TripInfoView({
