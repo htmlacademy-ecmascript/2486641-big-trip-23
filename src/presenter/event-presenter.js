@@ -145,8 +145,8 @@ export default class EventPresenter {
     this.#mode = Mode.DEFAULT;
   }
 
-  #handleFormSubmit = (event) => {
-    this.#handleDataChange(
+  #handleFormSubmit = async (event) => {
+    await this.#handleDataChange(
       UserAction.UPDATE_EVENT,
       UpdateType.MINOR,
       event
