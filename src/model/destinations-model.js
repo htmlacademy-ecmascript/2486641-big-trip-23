@@ -4,6 +4,7 @@ import Observable from '../framework/observable.js';
 export default class DestinationsModel extends Observable {
   #destinations = [];
   #destinationsApiService = null;
+  isUnavailableServer = false;
 
   constructor({destinationsApiService}) {
     super();
@@ -18,6 +19,7 @@ export default class DestinationsModel extends Observable {
     try {
       this.#destinations = await this.#destinationsApiService.destinations;
     } catch(err) {
+      this.isUnavailableServer = true;
       this.#destinations = [];
     }
     this._notify(UpdateType.INIT);

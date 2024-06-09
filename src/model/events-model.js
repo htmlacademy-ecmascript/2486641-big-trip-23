@@ -3,15 +3,26 @@ import Observable from '../framework/observable.js';
 
 export default class EventsModel extends Observable {
   #events = [];
-  #eventsApiService = null;
+  #destinations = [];
+  #offers = [];
+  #tripApiService = null;
+  isUnavailableServer = false;
 
-  constructor({eventsApiService}) {
+  constructor({tripApiService}) {
     super();
-    this.#eventsApiService = eventsApiService;
+    this.#tripApiService = tripApiService;
   }
 
   get events() {
     return this.#events;
+  }
+
+  get destinations() {
+    return this.#destinations;
+  }
+
+  get offers() {
+    return this.#offers;
   }
 
   #adaptToClient(event) {
@@ -39,7 +50,7 @@ export default class EventsModel extends Observable {
     }
 
     try {
-      const response = await this.#eventsApiService.updateEvent(update);
+      const response = await this.#tripApiService.updateEvent(update);
       const updatedEvent = this.#adaptToClient(response);
       this.#events = [
         ...this.#events.slice(0, index),
@@ -54,7 +65,7 @@ export default class EventsModel extends Observable {
 
   async addEvent(updateType, update) {
     try {
-      const response = await this.#eventsApiService.addEvent(update);
+      const response = await this.#tripApiService.addEvent(update);
       const newEvent = this.#adaptToClient(response);
       this.#events = [newEvent, ...this.#events];
       this._notify(updateType, newEvent);
@@ -71,7 +82,7 @@ export default class EventsModel extends Observable {
     }
 
     try {
-      await this.#eventsApiService.deleteEvent(update);
+      await this.#tripApiService.deleteEvent(update);
       this.#events = [
         ...this.#events.slice(0, index),
         ...this.#events.slice(index + 1),
@@ -84,10 +95,12 @@ export default class EventsModel extends Observable {
 
   async init() {
     try {
-      const events = await this.#eventsApiService.events;
+      const events = await this.#tripApiService.events;
       this.#events = events.map(this.#adaptToClient);
+      this.#destinations = await this.#tripApiService.destinations;
+      this.#offers = await this.#tripApiService.offers;
     } catch(err) {
-      this.#events = [];
+      this.isUnavailableServer = true;
     }
     this._notify(UpdateType.INIT);
   }

@@ -15,24 +15,21 @@ export default class EventListPresenter {
   #emptyListComponent = null;
   #container = null;
   #eventsModel = null;
-  #destinationModel = null;
-  #offersModel = null;
   #eventPresenters = new Map();
   #currentSortType = SortType.DAY;
   #filterModel = null;
   #filterType = FilterType.EVERYTHING;
   #newEventPresenter = null;
   #onNewEventDestroy = null;
+  #failedMessageComponent = null;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
   });
 
-  constructor({container, eventsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy}) {
+  constructor({container, eventsModel, filterModel, onNewEventDestroy}) {
     this.#container = container;
     this.#eventsModel = eventsModel;
-    this.#destinationModel = destinationsModel;
-    this.#offersModel = offersModel;
     this.#filterModel = filterModel;
     this.#onNewEventDestroy = onNewEventDestroy;
 
@@ -49,11 +46,11 @@ export default class EventListPresenter {
   }
 
   get destinations() {
-    return this.#destinationModel.destinations;
+    return this.#eventsModel.destinations;
   }
 
   get offers() {
-    return this.#offersModel.offers;
+    return this.#eventsModel.offers;
   }
 
   #handleViewAction = async (actionType, updateType, update) => {
@@ -127,6 +124,13 @@ export default class EventListPresenter {
     render(this.#emptyListComponent, this.#container);
   }
 
+
+  #renderFailedMessage(){
+    remove(this.#emptyListComponent);
+    this.#failedMessageComponent = new EmptyListView(this.#filterType, 'Failed to load latest route information');
+    render(this.#failedMessageComponent, this.#container);
+  }
+
   #renderEvent(event){
     const eventPresenter = new EventPresenter({
       eventListElement: this.#eventListComponent.element,
@@ -141,6 +145,10 @@ export default class EventListPresenter {
 
   #renderTrip() {
     this.#renderEventContainer();
+    if (this.#eventsModel.isUnavailableServer) {
+      this.#renderFailedMessage();
+      return;
+    }
     if (!this.events.length) {
       this.#renderEmptyList();
       return;
@@ -185,9 +193,6 @@ export default class EventListPresenter {
   createEvent() {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    // if (this.#emptyListComponent) {
-    //   remove(this.#emptyListComponent);
-    // }
 
     this.#newEventPresenter = new NewEventPresenter({
       eventListElement: this.#eventListComponent.element,

@@ -12,8 +12,6 @@ export default class MainPresenter {
   #tripInfoPresenter = null;
 
   #eventsModel = null;
-  #destinationsModel = null;
-  #offersModel = null;
   #filterModel = null;
 
   #newEventButtonComponent = null;
@@ -25,17 +23,13 @@ export default class MainPresenter {
 
   constructor({
     eventsModel,
-    destinationsModel,
-    offersModel,
     filterModel,
     eventListContainer,
     filterContainer,
     tripMainContainer,
     newEventButtonContainer
   }) {
-    this.#destinationsModel = destinationsModel;
     this.#eventsModel = eventsModel;
-    this.#offersModel = offersModel;
     this.#filterModel = filterModel;
     this.#newEventButtonContainer = newEventButtonContainer;
     this.#eventListContainer = eventListContainer;
@@ -43,8 +37,6 @@ export default class MainPresenter {
     this.#eventListPresenter = new EventListPresenter({
       container: eventListContainer,
       eventsModel: this.#eventsModel,
-      destinationsModel: this.#destinationsModel,
-      offersModel: this.#offersModel,
       filterModel: this.#filterModel,
       onNewEventDestroy: this.#handleNewEventFormClose,
     });
@@ -55,8 +47,6 @@ export default class MainPresenter {
     });
     this.#tripInfoPresenter = new TripInfoPresenter({
       eventsModel: this.#eventsModel,
-      destinationsModel: this.#destinationsModel,
-      offersModel: this.#offersModel,
       infoContainer: tripMainContainer
     });
     this.#newEventButtonComponent = new NewEventButtonView({
@@ -76,7 +66,9 @@ export default class MainPresenter {
       case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
-        this.#newEventButtonComponent.element.disabled = false;
+        if (!this.#eventsModel.isUnavailableServer) {
+          this.#newEventButtonComponent.element.disabled = false;
+        }
         this.#renderPage();
         break;
     }

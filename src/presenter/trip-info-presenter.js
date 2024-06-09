@@ -5,15 +5,11 @@ import TripInfoView from '../view/trip-info-view.js';
 
 export default class TripInfoPresenter {
   #eventsModel = null;
-  #offersModel = null;
-  #destinationsModel = null;
   #infoContainer = null;
   #tripInfoComponent = null;
 
-  constructor({eventsModel, offersModel, destinationsModel, infoContainer}) {
+  constructor({eventsModel, infoContainer}) {
     this.#eventsModel = eventsModel;
-    this.#offersModel = offersModel;
-    this.#destinationsModel = destinationsModel;
     this.#infoContainer = infoContainer;
 
     this.#eventsModel.addObserver(this.#handleModelEvent);
@@ -28,18 +24,19 @@ export default class TripInfoPresenter {
   }
 
   get offers() {
-    return this.#offersModel.offers.flatMap((item) => item.offers);
+    return this.#eventsModel.offers.flatMap((item) => item.offers);
   }
 
   get destinations() {
-    return this.#destinationsModel.destinations;
+    return this.#eventsModel.destinations;
   }
 
   init() {
+    if (!this.events.length && this.#tripInfoComponent) {
+      remove(this.#tripInfoComponent);
+      return;
+    }
     if (!this.events.length) {
-      if (this.#tripInfoComponent) {
-        remove(this.#tripInfoComponent);
-      }
       return;
     }
     const prevTripInfoComponent = this.#tripInfoComponent;

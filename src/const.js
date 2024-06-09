@@ -1,3 +1,7 @@
+const AUTHORIZATION = 'Basic 7950hS1sa2j4049';
+
+const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
+
 const INFO_CITIES_COUNT = 3;
 
 const EventTypes = {
@@ -89,4 +93,4 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
-export {EventTypes, SortItems, FilterType, SortType, DateFormat, UserAction, UpdateType, NoTasksTextType, NewEvent, INFO_CITIES_COUNT, Method, Url, TimeLimit};
+export {EventTypes, SortItems, FilterType, SortType, DateFormat, UserAction, UpdateType, NoTasksTextType, NewEvent, INFO_CITIES_COUNT, Method, Url, TimeLimit, AUTHORIZATION, END_POINT};
