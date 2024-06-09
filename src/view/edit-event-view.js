@@ -98,7 +98,6 @@ const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
               id="event-destination-1"
               type="text"
               name="event-destination"
-              required
               value="${(destination) ? destination.name : ''}"
               list="destination-list-1"
               ${isDisabled ? 'disabled' : ''}
@@ -114,7 +113,6 @@ const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
               id="event-start-time-1"
               type="text"
               name="event-start-time"
-              required
               value="${startDate}"
               ${isDisabled ? 'disabled' : ''}
             >
@@ -124,7 +122,6 @@ const createEditEventTemplate = ({event, offers, eventTypes, destinations}) => {
               id="event-end-time-1"
               type="text"
               name="event-end-time"
-              required
               value="${endDate}"
               ${isDisabled ? 'disabled' : ''}
             >

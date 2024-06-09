@@ -91,7 +91,7 @@ export default class MainPresenter {
     render(this.#newEventButtonComponent, this.#newEventButtonContainer);
   }
 
-  async init() {
+  init() {
     this.#filterPresenter.init();
     this.#newEventButtonComponent.element.disabled = true;
     this.#renderNewEventButton();

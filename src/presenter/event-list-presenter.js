@@ -203,5 +203,6 @@ export default class EventListPresenter {
       onDestroy: this.#onNewEventDestroy,
     });
     this.#newEventPresenter.init();
+    remove(this.#emptyListComponent);
   }
 }
