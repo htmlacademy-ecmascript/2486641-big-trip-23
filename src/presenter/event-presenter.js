@@ -151,8 +151,6 @@ export default class EventPresenter {
       UpdateType.MINOR,
       event
     );
-    this.#replaceFormToPoint();
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
   #handleFormClose = () => {

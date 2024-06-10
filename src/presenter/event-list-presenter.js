@@ -1,4 +1,4 @@
-import { FilterType, SortItems, SortType, TimeLimit, UpdateType, UserAction } from '../const.js';
+import { FilterType, NoTasksTextType, SortItems, SortType, TimeLimit, UpdateType, UserAction } from '../const.js';
 import { RenderPosition, remove, render } from '../framework/render.js';
 import { SortRules } from '../utils/event.js';
 import { filter } from '../utils/filter.js';
@@ -119,16 +119,10 @@ export default class EventListPresenter {
     render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
   }
 
-  #renderEmptyList(){
-    this.#emptyListComponent = new EmptyListView(this.#filterType);
+  #renderEmptyList(message){
+    remove(this.#failedMessageComponent);
+    this.#emptyListComponent = new EmptyListView(this.#filterType, message);
     render(this.#emptyListComponent, this.#container);
-  }
-
-
-  #renderFailedMessage(){
-    remove(this.#emptyListComponent);
-    this.#failedMessageComponent = new EmptyListView(this.#filterType, 'Failed to load latest route information');
-    render(this.#failedMessageComponent, this.#container);
   }
 
   #renderEvent(event){
@@ -146,7 +140,7 @@ export default class EventListPresenter {
   #renderTrip() {
     this.#renderEventContainer();
     if (this.#eventsModel.isUnavailableServer) {
-      this.#renderFailedMessage();
+      this.#renderEmptyList(NoTasksTextType.SERVER_ERROR);
       return;
     }
     if (!this.events.length) {
@@ -205,4 +199,5 @@ export default class EventListPresenter {
     this.#newEventPresenter.init();
     remove(this.#emptyListComponent);
   }
+
 }

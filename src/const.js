@@ -66,6 +66,7 @@ const NoTasksTextType = {
   [FilterType.PAST]: 'There are no past events now',
   [FilterType.PRESENT]: 'There are no present events now',
   [FilterType.FUTURE]: 'There are no future events now',
+  SERVER_ERROR: 'Failed to load latest route information',
 };
 
 const NewEvent = {
