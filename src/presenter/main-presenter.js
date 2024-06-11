@@ -81,6 +81,7 @@ export default class MainPresenter {
 
   #handleNewEventFormClose = () => {
     this.#newEventButtonComponent.element.disabled = false;
+    this.#eventListPresenter.renderMessage();
   };
 
   #renderLoading() {

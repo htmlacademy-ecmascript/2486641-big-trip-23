@@ -21,7 +21,6 @@ export default class EventListPresenter {
   #filterType = FilterType.EVERYTHING;
   #newEventPresenter = null;
   #onNewEventDestroy = null;
-  #failedMessageComponent = null;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
@@ -120,9 +119,13 @@ export default class EventListPresenter {
   }
 
   #renderEmptyList(message){
-    remove(this.#failedMessageComponent);
     this.#emptyListComponent = new EmptyListView(this.#filterType, message);
     render(this.#emptyListComponent, this.#container);
+  }
+
+  #destroyEmptyList(){
+    remove(this.#emptyListComponent);
+    this.#emptyListComponent = null;
   }
 
   #renderEvent(event){
@@ -137,14 +140,21 @@ export default class EventListPresenter {
     this.#eventPresenters.set(event.id, eventPresenter);
   }
 
-  #renderTrip() {
-    this.#renderEventContainer();
+  renderMessage() {
+    this.#destroyEmptyList();
     if (this.#eventsModel.isUnavailableServer) {
       this.#renderEmptyList(NoTasksTextType.SERVER_ERROR);
       return;
     }
     if (!this.events.length) {
       this.#renderEmptyList();
+    }
+  }
+
+  #renderTrip() {
+    this.#renderEventContainer();
+    this.renderMessage();
+    if (this.#emptyListComponent) {
       return;
     }
     this.#renderSort();
