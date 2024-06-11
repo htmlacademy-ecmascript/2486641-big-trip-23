@@ -12,8 +12,6 @@ export default class MainPresenter {
   #tripInfoPresenter = null;
 
   #eventsModel = null;
-  #destinationsModel = null;
-  #offersModel = null;
   #filterModel = null;
 
   #newEventButtonComponent = null;
@@ -25,17 +23,13 @@ export default class MainPresenter {
 
   constructor({
     eventsModel,
-    destinationsModel,
-    offersModel,
     filterModel,
     eventListContainer,
     filterContainer,
     tripMainContainer,
     newEventButtonContainer
   }) {
-    this.#destinationsModel = destinationsModel;
     this.#eventsModel = eventsModel;
-    this.#offersModel = offersModel;
     this.#filterModel = filterModel;
     this.#newEventButtonContainer = newEventButtonContainer;
     this.#eventListContainer = eventListContainer;
@@ -43,8 +37,6 @@ export default class MainPresenter {
     this.#eventListPresenter = new EventListPresenter({
       container: eventListContainer,
       eventsModel: this.#eventsModel,
-      destinationsModel: this.#destinationsModel,
-      offersModel: this.#offersModel,
       filterModel: this.#filterModel,
       onNewEventDestroy: this.#handleNewEventFormClose,
     });
@@ -55,8 +47,6 @@ export default class MainPresenter {
     });
     this.#tripInfoPresenter = new TripInfoPresenter({
       eventsModel: this.#eventsModel,
-      destinationsModel: this.#destinationsModel,
-      offersModel: this.#offersModel,
       infoContainer: tripMainContainer
     });
     this.#newEventButtonComponent = new NewEventButtonView({
@@ -66,9 +56,29 @@ export default class MainPresenter {
     this.#eventsModel.addObserver(this.#handleModelEvent);
   }
 
+  init() {
+    this.#filterPresenter.init();
+    this.#newEventButtonComponent.element.disabled = true;
+    this.#renderNewEventButton();
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+    this.#renderPage();
+  }
+
   #renderPage() {
     this.#tripInfoPresenter.init();
     this.#eventListPresenter.init();
+  }
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#eventListContainer);
+  }
+
+  #renderNewEventButton(){
+    render(this.#newEventButtonComponent, this.#newEventButtonContainer);
   }
 
   #handleModelEvent = (updateType) => {
@@ -76,7 +86,9 @@ export default class MainPresenter {
       case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
-        this.#newEventButtonComponent.element.disabled = false;
+        if (!this.#eventsModel.isUnavailableServer) {
+          this.#newEventButtonComponent.element.disabled = false;
+        }
         this.#renderPage();
         break;
     }
@@ -89,26 +101,6 @@ export default class MainPresenter {
 
   #handleNewEventFormClose = () => {
     this.#newEventButtonComponent.element.disabled = false;
+    this.#eventListPresenter.renderMessage();
   };
-
-  #renderLoading() {
-    render(this.#loadingComponent, this.#eventListContainer);
-  }
-
-  #renderNewEventButton(){
-    render(this.#newEventButtonComponent, this.#newEventButtonContainer);
-  }
-
-  async init() {
-    this.#filterPresenter.init();
-    this.#newEventButtonComponent.element.disabled = true;
-    this.#renderNewEventButton();
-
-    if (this.#isLoading) {
-      this.#renderLoading();
-      return;
-    }
-    this.#renderPage();
-  }
-
 }

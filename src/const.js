@@ -1,3 +1,7 @@
+const AUTHORIZATION = 'Basic 7950hS1sa2j4049';
+
+const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
+
 const INFO_CITIES_COUNT = 3;
 
 const EventTypes = {
@@ -62,12 +66,48 @@ const NoTasksTextType = {
   [FilterType.PAST]: 'There are no past events now',
   [FilterType.PRESENT]: 'There are no present events now',
   [FilterType.FUTURE]: 'There are no future events now',
+  SERVER_ERROR: 'Failed to load latest route information',
 };
 
 const NewEvent = {
   type: EventTypes.FLIGHT,
   basePrice: '0',
   offers: [],
+  isFavorite: false,
 };
 
-export {EventTypes, SortItems, FilterType, SortType, DateFormat, UserAction, UpdateType, NoTasksTextType, NewEvent, INFO_CITIES_COUNT};
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
+};
+
+const Url = {
+  EVENTS: 'points',
+  OFFERS: 'offers',
+  DESTINATIONS: 'destinations',
+};
+
+const TimeLimit = {
+  LOWER_LIMIT: 0,
+  UPPER_LIMIT: 1000,
+};
+
+export {
+  EventTypes,
+  SortItems,
+  FilterType,
+  SortType,
+  DateFormat,
+  UserAction,
+  UpdateType,
+  NoTasksTextType,
+  NewEvent,
+  INFO_CITIES_COUNT,
+  Method,
+  Url,
+  TimeLimit,
+  AUTHORIZATION,
+  END_POINT
+};

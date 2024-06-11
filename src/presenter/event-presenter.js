@@ -33,61 +33,6 @@ export default class EventPresenter {
     this.#offers = offers;
   }
 
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      this.#replaceFormToPoint();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    }
-  };
-
-  #replacePointToForm() {
-    replace(this.#editEventElement, this.#eventElement);
-    this.#handleModeChange();
-    this.#mode = Mode.EDITING;
-  }
-
-  #replaceFormToPoint() {
-    replace(this.#eventElement, this.#editEventElement);
-    this.#mode = Mode.DEFAULT;
-  }
-
-  #handleFormSubmit = (event) => {
-    this.#handleDataChange(
-      UserAction.UPDATE_EVENT,
-      UpdateType.MINOR,
-      event
-    );
-    this.#replaceFormToPoint();
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
-  };
-
-  #handleFormClose = () => {
-    this.#replaceFormToPoint();
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
-  };
-
-  #handleFormEdit = () => {
-    this.#replacePointToForm();
-    document.addEventListener('keydown', this.#escKeyDownHandler);
-  };
-
-  #handleFavoriteClick = () => {
-    this.#handleDataChange(
-      UserAction.UPDATE_EVENT,
-      UpdateType.PATCH,
-      {...this.#event, isFavorite: !this.#event.isFavorite}
-    );
-  };
-
-  #handleDeleteClick = (event) => {
-    this.#handleDataChange(
-      UserAction.DELETE_EVENT,
-      UpdateType.MINOR,
-      event,
-    );
-  };
-
   init(event) {
     this.#event = event;
     this.#destination = getArrayElement(this.#destinations, this.#event.destination);
@@ -124,11 +69,47 @@ export default class EventPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#editEventElement, prevEditEventElement);
+      replace(this.#eventElement, prevEditEventElement);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevEventElement);
     remove(prevEditEventElement);
+  }
+
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editEventElement.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editEventElement.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#eventElement.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#editEventElement.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editEventElement.shake(resetFormState);
   }
 
   destroy() {
@@ -138,8 +119,64 @@ export default class EventPresenter {
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#editEventElement.reset(this.#event);
       this.#replaceFormToPoint();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
   }
+
+  #replacePointToForm() {
+    replace(this.#editEventElement, this.#eventElement);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
+  }
+
+  #replaceFormToPoint() {
+    replace(this.#eventElement, this.#editEventElement);
+    this.#mode = Mode.DEFAULT;
+  }
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#editEventElement.reset(this.#event);
+      this.#replaceFormToPoint();
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
+    }
+  };
+
+  #handleFormSubmit = async (event) => {
+    await this.#handleDataChange(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
+      event
+    );
+  };
+
+  #handleFormClose = () => {
+    this.#editEventElement.reset(this.#event);
+    this.#replaceFormToPoint();
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #handleFormEdit = () => {
+    this.#replacePointToForm();
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #handleFavoriteClick = () => {
+    this.#handleDataChange(
+      UserAction.UPDATE_EVENT,
+      UpdateType.PATCH,
+      {...this.#event, isFavorite: !this.#event.isFavorite}
+    );
+  };
+
+  #handleDeleteClick = (event) => {
+    this.#handleDataChange(
+      UserAction.DELETE_EVENT,
+      UpdateType.MINOR,
+      event,
+    );
+  };
 }

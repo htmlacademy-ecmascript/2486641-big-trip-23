@@ -3,11 +3,16 @@ import AbstractView from '../framework/view/abstract-view.js';
 const createFilterTemplate = (filters, currentFilterType) => {
   const filterElements = filters.map((filter) =>
     `<div class="trip-filters__filter">
-      <input id="filter-${filter.type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filter.type}" 
+      <input id="filter-${filter.type}" 
+      class="trip-filters__filter-input 
+      visually-hidden" type="radio" 
+      name="trip-filter" value="${filter.type}" 
       ${filter.count === 0 ? 'disabled' : ''}
       ${filter.type === currentFilterType ? 'checked' : ''}
       >
-      <label class="trip-filters__filter-label" for="filter-${filter.type}">${filter.type}</label>
+      <label class="trip-filters__filter-label" for="filter-${filter.type}">
+      ${filter.type}
+      </label>
     </div>`).join('');
 
   return (
