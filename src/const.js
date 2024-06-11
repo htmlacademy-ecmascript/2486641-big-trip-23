@@ -94,4 +94,20 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
-export {EventTypes, SortItems, FilterType, SortType, DateFormat, UserAction, UpdateType, NoTasksTextType, NewEvent, INFO_CITIES_COUNT, Method, Url, TimeLimit, AUTHORIZATION, END_POINT};
+export {
+  EventTypes,
+  SortItems,
+  FilterType,
+  SortType,
+  DateFormat,
+  UserAction,
+  UpdateType,
+  NoTasksTextType,
+  NewEvent,
+  INFO_CITIES_COUNT,
+  Method,
+  Url,
+  TimeLimit,
+  AUTHORIZATION,
+  END_POINT
+};

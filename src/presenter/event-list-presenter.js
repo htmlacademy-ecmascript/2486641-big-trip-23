@@ -52,6 +52,98 @@ export default class EventListPresenter {
     return this.#eventsModel.offers;
   }
 
+  init() {
+    this.#renderTrip();
+  }
+
+  createEvent() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+
+    this.#newEventPresenter = new NewEventPresenter({
+      eventListElement: this.#eventListComponent.element,
+      onDataChange: this.#handleViewAction,
+      onModeChange: this.#handleModeChange,
+      destinations: this.destinations,
+      offers: this.offers,
+      onDestroy: this.#onNewEventDestroy,
+    });
+    this.#newEventPresenter.init();
+    remove(this.#emptyListComponent);
+  }
+
+  renderMessage() {
+    this.#destroyEmptyList();
+    if (this.#eventsModel.isUnavailableServer) {
+      this.#renderEmptyList(NoTasksTextType.SERVER_ERROR);
+      return;
+    }
+    if (!this.events.length) {
+      this.#renderEmptyList();
+    }
+  }
+
+  #renderEventContainer(){
+    render(this.#eventListComponent, this.#container);
+  }
+
+  #renderEventList(){
+    this.events.forEach((event) => this.#renderEvent(event));
+  }
+
+  #renderSort(){
+    this.#sortComponent = new SortView({
+      sortItems: SortItems,
+      onSortTypeChange: this.#handleSortTypeChange,
+      currentSortType: this.#currentSortType,
+    });
+    render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderEmptyList(message){
+    this.#emptyListComponent = new EmptyListView(this.#filterType, message);
+    render(this.#emptyListComponent, this.#container);
+  }
+
+  #destroyEmptyList(){
+    remove(this.#emptyListComponent);
+    this.#emptyListComponent = null;
+  }
+
+  #renderEvent(event){
+    const eventPresenter = new EventPresenter({
+      eventListElement: this.#eventListComponent.element,
+      onDataChange: this.#handleViewAction,
+      onModeChange: this.#handleModeChange,
+      destinations: this.destinations,
+      offers: this.offers,
+    });
+    eventPresenter.init(event);
+    this.#eventPresenters.set(event.id, eventPresenter);
+  }
+
+  #renderTrip() {
+    this.#renderEventContainer();
+    this.renderMessage();
+    if (this.#emptyListComponent) {
+      return;
+    }
+    this.#renderSort();
+    this.#renderEventList();
+  }
+
+  #clearEventList(resetSortType = false) {
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+    remove(this.#sortComponent);
+    if (this.#emptyListComponent) {
+      remove(this.#emptyListComponent);
+    }
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
+  }
+
   #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
     const currentPresenter = (update.id) ? this.#eventPresenters.get(update.id) : null;
@@ -101,66 +193,6 @@ export default class EventListPresenter {
     }
   };
 
-  #renderEventContainer(){
-    render(this.#eventListComponent, this.#container);
-  }
-
-  #renderEventList(){
-    this.events.forEach((event) => this.#renderEvent(event));
-  }
-
-  #renderSort(){
-    this.#sortComponent = new SortView({
-      sortItems: SortItems,
-      onSortTypeChange: this.#handleSortTypeChange,
-      currentSortType: this.#currentSortType,
-    });
-    render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
-  }
-
-  #renderEmptyList(message){
-    this.#emptyListComponent = new EmptyListView(this.#filterType, message);
-    render(this.#emptyListComponent, this.#container);
-  }
-
-  #destroyEmptyList(){
-    remove(this.#emptyListComponent);
-    this.#emptyListComponent = null;
-  }
-
-  #renderEvent(event){
-    const eventPresenter = new EventPresenter({
-      eventListElement: this.#eventListComponent.element,
-      onDataChange: this.#handleViewAction,
-      onModeChange: this.#handleModeChange,
-      destinations: this.destinations,
-      offers: this.offers,
-    });
-    eventPresenter.init(event);
-    this.#eventPresenters.set(event.id, eventPresenter);
-  }
-
-  renderMessage() {
-    this.#destroyEmptyList();
-    if (this.#eventsModel.isUnavailableServer) {
-      this.#renderEmptyList(NoTasksTextType.SERVER_ERROR);
-      return;
-    }
-    if (!this.events.length) {
-      this.#renderEmptyList();
-    }
-  }
-
-  #renderTrip() {
-    this.#renderEventContainer();
-    this.renderMessage();
-    if (this.#emptyListComponent) {
-      return;
-    }
-    this.#renderSort();
-    this.#renderEventList();
-  }
-
   #handleModeChange = () => {
     if (this.#newEventPresenter) {
       this.#newEventPresenter.destroy();
@@ -177,37 +209,4 @@ export default class EventListPresenter {
     this.#clearEventList();
     this.#renderTrip();
   };
-
-  #clearEventList(resetSortType = false) {
-    this.#eventPresenters.forEach((presenter) => presenter.destroy());
-    this.#eventPresenters.clear();
-    remove(this.#sortComponent);
-    if (this.#emptyListComponent) {
-      remove(this.#emptyListComponent);
-    }
-    if (resetSortType) {
-      this.#currentSortType = SortType.DAY;
-    }
-  }
-
-  init() {
-    this.#renderTrip();
-  }
-
-  createEvent() {
-    this.#currentSortType = SortType.DAY;
-    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-
-    this.#newEventPresenter = new NewEventPresenter({
-      eventListElement: this.#eventListComponent.element,
-      onDataChange: this.#handleViewAction,
-      onModeChange: this.#handleModeChange,
-      destinations: this.destinations,
-      offers: this.offers,
-      onDestroy: this.#onNewEventDestroy,
-    });
-    this.#newEventPresenter.init();
-    remove(this.#emptyListComponent);
-  }
-
 }

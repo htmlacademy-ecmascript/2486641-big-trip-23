@@ -56,9 +56,29 @@ export default class MainPresenter {
     this.#eventsModel.addObserver(this.#handleModelEvent);
   }
 
+  init() {
+    this.#filterPresenter.init();
+    this.#newEventButtonComponent.element.disabled = true;
+    this.#renderNewEventButton();
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+    this.#renderPage();
+  }
+
   #renderPage() {
     this.#tripInfoPresenter.init();
     this.#eventListPresenter.init();
+  }
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#eventListContainer);
+  }
+
+  #renderNewEventButton(){
+    render(this.#newEventButtonComponent, this.#newEventButtonContainer);
   }
 
   #handleModelEvent = (updateType) => {
@@ -83,25 +103,4 @@ export default class MainPresenter {
     this.#newEventButtonComponent.element.disabled = false;
     this.#eventListPresenter.renderMessage();
   };
-
-  #renderLoading() {
-    render(this.#loadingComponent, this.#eventListContainer);
-  }
-
-  #renderNewEventButton(){
-    render(this.#newEventButtonComponent, this.#newEventButtonContainer);
-  }
-
-  init() {
-    this.#filterPresenter.init();
-    this.#newEventButtonComponent.element.disabled = true;
-    this.#renderNewEventButton();
-
-    if (this.#isLoading) {
-      this.#renderLoading();
-      return;
-    }
-    this.#renderPage();
-  }
-
 }

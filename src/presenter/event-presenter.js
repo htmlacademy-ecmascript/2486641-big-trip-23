@@ -125,15 +125,6 @@ export default class EventPresenter {
     }
   }
 
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      this.#editEventElement.reset(this.#event);
-      this.#replaceFormToPoint();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    }
-  };
-
   #replacePointToForm() {
     replace(this.#editEventElement, this.#eventElement);
     this.#handleModeChange();
@@ -144,6 +135,15 @@ export default class EventPresenter {
     replace(this.#eventElement, this.#editEventElement);
     this.#mode = Mode.DEFAULT;
   }
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#editEventElement.reset(this.#event);
+      this.#replaceFormToPoint();
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
+    }
+  };
 
   #handleFormSubmit = async (event) => {
     await this.#handleDataChange(
@@ -179,5 +179,4 @@ export default class EventPresenter {
       event,
     );
   };
-
 }

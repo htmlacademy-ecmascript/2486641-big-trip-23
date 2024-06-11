@@ -2,7 +2,7 @@ import { DateFormat } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import { getDuration, getFormattingDate } from '../utils/event.js';
 
-const createEventTemplate = (event, destination, offersInfo) => {
+const createEventTemplate = ({event, destination, offersInfo}) => {
   const {basePrice, dateFrom, dateTo, isFavorite, type} = event;
   const favoriteClass = isFavorite ? 'event__favorite-btn--active' : '';
   const printDate = getFormattingDate(dateFrom, DateFormat.POINT_DAY);
@@ -77,7 +77,11 @@ export default class EventView extends AbstractView {
   }
 
   get template() {
-    return createEventTemplate(this.#event, this.#destination, this.#offersInfo);
+    return createEventTemplate({
+      event: this.#event,
+      destination: this.#destination,
+      offersInfo: this.#offersInfo
+    });
   }
 
   #editClickHandler = (evt) => {

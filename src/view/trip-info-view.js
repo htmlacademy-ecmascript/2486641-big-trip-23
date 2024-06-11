@@ -16,7 +16,9 @@ const getTripDestinations = ({events, destinations}) => {
 };
 
 const getTripDates = ({events}) => (
-  `${getFormattingDate(events[0].dateFrom, DateFormat.TRIP_INFO)}&nbsp;&mdash;&nbsp;${getFormattingDate(events[events.length - 1].dateTo, DateFormat.TRIP_INFO)}`
+  `${getFormattingDate(events[0].dateFrom, DateFormat.TRIP_INFO)}
+  &nbsp;&mdash;&nbsp;
+  ${getFormattingDate(events[events.length - 1].dateTo, DateFormat.TRIP_INFO)}`
 );
 
 const getSumOffersPrice = ({events, offers}) => {

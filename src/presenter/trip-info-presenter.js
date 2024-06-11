@@ -15,10 +15,6 @@ export default class TripInfoPresenter {
     this.#eventsModel.addObserver(this.#handleModelEvent);
   }
 
-  #handleModelEvent = () => {
-    this.init();
-  };
-
   get events() {
     return this.#eventsModel.events.sort(SortRules[SortType.DAY]);
   }
@@ -54,4 +50,8 @@ export default class TripInfoPresenter {
     replace(this.#tripInfoComponent, prevTripInfoComponent);
     remove(prevTripInfoComponent);
   }
+
+  #handleModelEvent = () => {
+    this.init();
+  };
 }

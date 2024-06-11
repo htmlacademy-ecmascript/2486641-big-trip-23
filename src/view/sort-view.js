@@ -33,6 +33,10 @@ export default class SortView extends AbstractView {
     this.element.addEventListener('click', this.#sortTypeChangeHandler);
   }
 
+  get template() {
+    return createSortTemplate(this.#sortItems, this.#currentSortType);
+  }
+
   #sortTypeChangeHandler = (evt) => {
     if (evt.target.tagName !== 'INPUT' || !this.#sortItems[evt.target.dataset.sortType].available) {
       return;
@@ -40,9 +44,4 @@ export default class SortView extends AbstractView {
 
     this.#handleSortTypeChange(evt.target.dataset.sortType);
   };
-
-  get template() {
-    return createSortTemplate(this.#sortItems, this.#currentSortType);
-  }
-
 }
