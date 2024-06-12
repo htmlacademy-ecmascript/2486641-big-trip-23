@@ -2,7 +2,7 @@ import { NoTasksTextType } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const createEmptyListTemplate = (filterType, failedMessage) => {
-  const noTaskTextValue = (failedMessage) ? failedMessage : NoTasksTextType[filterType];
+  const noTaskTextValue = failedMessage || NoTasksTextType[filterType];
   return `<p class="trip-events__msg">${noTaskTextValue}</p>`;
 };
 

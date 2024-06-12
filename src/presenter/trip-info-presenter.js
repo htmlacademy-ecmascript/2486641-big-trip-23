@@ -30,6 +30,7 @@ export default class TripInfoPresenter {
   init() {
     if (!this.events.length && this.#tripInfoComponent) {
       remove(this.#tripInfoComponent);
+      this.#tripInfoComponent = null;
       return;
     }
     if (!this.events.length || this.#eventsModel.isUnavailableServer) {
