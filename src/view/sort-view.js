@@ -4,10 +4,10 @@ const createSortTemplate = (sortItems, currentSortType) => {
   let sortElements = '';
   Object.entries(sortItems).forEach(([key, value]) => {
     sortElements += `<div class="trip-sort__item  trip-sort__item--${key}">
-        <input id="sort-${key}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" 
-        value="sort-${key}" 
-        data-sort-type="${key}" 
-        ${value.available ? '' : 'disabled'} 
+        <input id="sort-${key}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort"
+        value="sort-${key}"
+        data-sort-type="${key}"
+        ${value.available ? '' : 'disabled'}
         ${key === currentSortType ? 'checked' : ''}>
         <label class="trip-sort__btn" for="sort-${key}">${value.label}</label>
       </div>`;
@@ -30,14 +30,14 @@ export default class SortView extends AbstractView {
     this.#handleSortTypeChange = onSortTypeChange;
     this.#currentSortType = currentSortType;
 
-    this.element.addEventListener('click', this.#sortTypeChangeHandler);
+    this.element.addEventListener('click', this.#sortTypeClickHandler);
   }
 
   get template() {
     return createSortTemplate(this.#sortItems, this.#currentSortType);
   }
 
-  #sortTypeChangeHandler = (evt) => {
+  #sortTypeClickHandler = (evt) => {
     if (evt.target.tagName !== 'INPUT' || !this.#sortItems[evt.target.dataset.sortType].available) {
       return;
     }
