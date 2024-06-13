@@ -214,7 +214,7 @@ export default class EditEventView extends AbstractStatefulView {
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#formCloseHandler);
+      .addEventListener('click', this.#rollupBtnClickHandler);
     this.element.querySelector('.event__type-group')
       .addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination')
@@ -241,7 +241,7 @@ export default class EditEventView extends AbstractStatefulView {
     this.#handleDeleteClick(EditEventView.parseStateToEvent(this._state));
   };
 
-  #formCloseHandler = (evt) => {
+  #rollupBtnClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormClose();
   };
